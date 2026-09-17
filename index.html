@@ -807,7 +807,9 @@
   const NOTE_TEXT  = note ? note.textContent : '';
 
   let conversation = null;
+  let sessionPromise = null;
   let busy = false;
+  let active = false;
 
   // Load the SDK. Wrapped so a CDN failure degrades gracefully.
   let Conversation = null;
@@ -840,7 +842,9 @@
   }
   function resetControls() {
     busy = false;
+    active = false;
     conversation = null;
+    sessionPromise = null;
     setState('idle');
     setLabel('Take the audio guide');
     if (btn) btn.disabled = false;
@@ -857,10 +861,11 @@
     if (note) note.hidden = true;
 
     try {
-      conversation = await Conversation.startSession({
+      sessionPromise = Conversation.startSession({
         agentId: AGENT_ID,
         onConnect: function () {
           busy = false;
+          active = true;
           if (btn) btn.disabled = false;
           setState('active');
           setLabel('End conversation');
@@ -877,6 +882,7 @@
           else showStatus('Listening…', 'listening');
         }
       });
+      conversation = await sessionPromise;
     } catch (e) {
       busy = false;
       if (btn) btn.disabled = false;
@@ -895,16 +901,34 @@
   }
 
   async function stop() {
-    if (conversation) {
-      try { await conversation.endSession(); } catch (e) {}
+    // Snappy UI feedback while we tear the session down.
+    if (btn) btn.disabled = true;
+    setLabel('Ending…');
+
+    // Grab the live session even if the connect promise hasn't resolved yet.
+    let c = conversation;
+    if (!c && sessionPromise) { try { c = await sessionPromise; } catch (e) { c = null; } }
+
+    let endError = null;
+    if (c) {
+      const ender = c.endSession || c.end || c.stop || c.disconnect || c.close;
+      if (typeof ender === 'function') {
+        try { await ender.call(c); }
+        catch (e) { endError = e; console.error('[concierge] end failed:', e); }
+      } else {
+        endError = new Error('no end method on session');
+        console.error('[concierge] session has no end method:', Object.keys(c || {}));
+      }
     }
+
     resetControls();
-    restoreNote();
+    if (endError) showError('Couldn’t end the call cleanly — please refresh the page to stop it.');
+    else restoreNote();
   }
 
   if (btn) {
     btn.addEventListener('click', function () {
-      if (conversation) stop();
+      if (active || busy || conversation) stop();
       else start();
     });
   }
