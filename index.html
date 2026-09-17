@@ -167,32 +167,51 @@
   }
   .guide-btn:hover { background: var(--accent-ink); }
   .guide-btn:active { transform: translateY(1px); }
+  .guide-btn:disabled { opacity: 0.7; cursor: default; }
   .guide-btn .dot {
     width: 9px; height: 9px; border-radius: 50%;
     background: var(--paper);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--paper) 70%, transparent);
-    animation: pulse 2.4s ease-out infinite;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  /* dot pulses only while connecting or live */
+  .guide-btn[data-state="connecting"] .dot,
+  .guide-btn[data-state="active"] .dot {
+    animation: pulse 2.2s ease-out infinite;
   }
   @keyframes pulse {
     0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--paper) 55%, transparent); }
     70% { box-shadow: 0 0 0 9px transparent; }
     100% { box-shadow: 0 0 0 0 transparent; }
   }
-  @media (prefers-reduced-motion: reduce) { .guide-btn .dot { animation: none; } }
-  .guide-note { font-size: 0.92rem; color: var(--ink-soft); max-width: 32ch; }
+  @media (prefers-reduced-motion: reduce) { .guide-btn .dot { animation: none !important; } }
+  .guide-note { margin-top: 1rem; font-size: 0.92rem; color: var(--ink-soft); max-width: 34ch; }
+  .guide-note.is-error { color: var(--accent); }
 
-  .guide-panel {
-    margin-top: 1.4rem;
-    border: 1px dashed var(--line);
-    background: var(--paper-2);
-    padding: 1.1rem 1.25rem;
-    font-size: 0.9rem;
+  /* live concierge status line */
+  .guide-status {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1rem;
+    font-size: 0.92rem;
     color: var(--ink-soft);
-    max-width: var(--measure);
-    display: none;
   }
-  .guide-panel.open { display: block; }
-  .guide-panel code { font-size: 0.82rem; }
+  .guide-status[hidden] { display: none; }
+  .guide-status .wave { display: inline-flex; align-items: flex-end; gap: 3px; height: 16px; }
+  .guide-status .wave i {
+    width: 3px; height: 5px; display: inline-block;
+    background: var(--ink-faint);
+    animation: eq 1s ease-in-out infinite;
+  }
+  .guide-status .wave i:nth-child(2) { animation-delay: .12s; }
+  .guide-status .wave i:nth-child(3) { animation-delay: .24s; }
+  .guide-status .wave i:nth-child(4) { animation-delay: .36s; }
+  /* accent + livelier bars while the concierge is speaking */
+  .guide-status[data-mode="speaking"] .wave i { background: var(--accent); }
+  @keyframes eq { 0%,100% { height: 4px; } 50% { height: 15px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .guide-status .wave i { animation: none; height: 11px; }
+  }
 
   /* ---------- Track record (figures band) ---------- */
   .record { padding-block: clamp(2.6rem, 6vw, 4.2rem); }
@@ -512,23 +531,21 @@
         <span class="turn">I do all three — and I'm making it run itself.</span>
       </h1>
 
-      <div class="guide">
-        <button class="guide-btn" id="guideBtn" aria-expanded="false" aria-controls="guidePanel">
-          <span class="dot" aria-hidden="true"></span>
-          Take the audio guide
-        </button>
-        <p class="guide-note">It's my voice, cloned. Ask the concierge anything about the work — it'll tell you what it doesn't know.</p>
-      </div>
-
       <!--
-        The concierge is wired below in the page script, gated on a single
-        ELEVENLABS_AGENT_ID constant. Until that ID is set, the note below shows
-        instead of a broken widget, so the site is safe to ship early.
-        See voice-agent/agent-setup.md for the full build kit.
+        Custom inline concierge — driven by the ElevenLabs SDK in the page script
+        below (no floating widget). The button starts/stops the conversation and
+        the status line reflects live state. Agent config: voice-agent/agent-setup.md
       -->
-      <div class="guide-panel" id="guidePanel" role="region" aria-label="About the audio guide">
-        The concierge is warming up. In the meantime, the work speaks for itself below —
-        or reach out directly via the <a href="#contact">contact links</a>.
+      <div class="guide">
+        <button class="guide-btn" id="guideBtn" data-state="idle" type="button">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="guide-btn-label">Take the audio guide</span>
+        </button>
+        <p class="guide-note" id="guideNote">It's my voice, cloned. Ask the concierge anything about the work — it'll tell you what it doesn't know.</p>
+        <div class="guide-status" id="guideStatus" aria-live="polite" hidden>
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="guide-status-text" id="guideStatusText">Connecting…</span>
+        </div>
       </div>
     </div>
   </section>
@@ -765,59 +782,132 @@
 </footer>
 
 <script>
-  /* ============================================================
-     VOICE CONCIERGE (ElevenLabs)
-     Paste your Agent ID between the quotes below and redeploy.
-     Get it from the ElevenLabs agent settings (looks like agent_xxxx).
-     Full build kit: voice-agent/agent-setup.md
-     ============================================================ */
-  const ELEVENLABS_AGENT_ID = "agent_0001m2qv6328ecdbpzmpjb7nmxx3"; // ElevenLabs concierge
-
-  (function () {
-    var btn = document.getElementById('guideBtn');
-    var panel = document.getElementById('guidePanel');
-    var note = document.querySelector('.guide-note');
-
-    if (ELEVENLABS_AGENT_ID) {
-      // --- Live: load the official ElevenLabs widget ---
-      var widget = document.createElement('elevenlabs-convai');
-      widget.setAttribute('agent-id', ELEVENLABS_AGENT_ID);
-      document.body.appendChild(widget);
-
-      var s = document.createElement('script');
-      s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-      s.async = true;
-      s.type = 'text/javascript';
-      document.body.appendChild(s);
-
-      // Hero button surfaces / opens the concierge.
-      if (btn) {
-        btn.setAttribute('aria-controls', 'elevenlabs-concierge');
-        btn.addEventListener('click', function () {
-          var w = document.querySelector('elevenlabs-convai');
-          if (!w) return;
-          w.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          // Best-effort open; the floating launcher is always available regardless.
-          try { w.click(); } catch (e) {}
-        });
-      }
-    } else {
-      // --- Not yet wired: graceful note, no broken widget ---
-      if (btn && panel) {
-        btn.addEventListener('click', function () {
-          var open = panel.classList.toggle('open');
-          btn.setAttribute('aria-expanded', String(open));
-        });
-      }
-    }
-  })();
-
   // Keep placeholder links from jumping anywhere until real URLs are added.
   document.querySelectorAll('a[data-placeholder]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       if (a.getAttribute('href') === '#') e.preventDefault();
     });
   });
+</script>
+
+<script type="module">
+  /* ============================================================
+     VOICE CONCIERGE — custom inline UI on the ElevenLabs SDK.
+     The hero button starts/stops the conversation; the status line
+     shows live state. No floating widget. Agent config lives in
+     voice-agent/agent-setup.md. To change the agent, edit AGENT_ID.
+     ============================================================ */
+  const AGENT_ID = "agent_0001m2qv6328ecdbpzmpjb7nmxx3";
+
+  const btn        = document.getElementById('guideBtn');
+  const label      = btn && btn.querySelector('.guide-btn-label');
+  const note       = document.getElementById('guideNote');
+  const statusEl   = document.getElementById('guideStatus');
+  const statusText = document.getElementById('guideStatusText');
+  const NOTE_TEXT  = note ? note.textContent : '';
+
+  let conversation = null;
+  let busy = false;
+
+  // Load the SDK. Wrapped so a CDN failure degrades gracefully.
+  let Conversation = null;
+  try {
+    ({ Conversation } = await import('https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm'));
+  } catch (e) {
+    Conversation = null;
+  }
+
+  function setLabel(t) { if (label) label.textContent = t; }
+  function setState(s) { if (btn) btn.dataset.state = s; }
+  function showStatus(text, mode) {
+    if (!statusEl) return;
+    statusEl.hidden = false;
+    if (statusText) statusText.textContent = text;
+    if (mode) statusEl.dataset.mode = mode;
+  }
+  function hideStatus() { if (statusEl) statusEl.hidden = true; }
+  function restoreNote() {
+    if (!note) return;
+    note.hidden = false;
+    note.classList.remove('is-error');
+    note.textContent = NOTE_TEXT;
+  }
+  function showError(msg) {
+    if (!note) return;
+    note.hidden = false;
+    note.classList.add('is-error');
+    note.textContent = msg;
+  }
+  function resetControls() {
+    busy = false;
+    conversation = null;
+    setState('idle');
+    setLabel('Take the audio guide');
+    if (btn) btn.disabled = false;
+    hideStatus();
+  }
+
+  async function start() {
+    if (busy || conversation) return;
+    if (!Conversation) { showError('The concierge could not load. Please refresh and try again.'); return; }
+    busy = true;
+    setState('connecting');
+    setLabel('Connecting…');
+    if (btn) btn.disabled = true;
+    if (note) note.hidden = true;
+
+    try {
+      conversation = await Conversation.startSession({
+        agentId: AGENT_ID,
+        onConnect: function () {
+          busy = false;
+          if (btn) btn.disabled = false;
+          setState('active');
+          setLabel('End conversation');
+          showStatus('Listening…', 'listening');
+        },
+        onDisconnect: function () { resetControls(); restoreNote(); },
+        onError: function (err) {
+          resetControls();
+          showError('The concierge ran into a problem. Please try again.');
+        },
+        onModeChange: function (m) {
+          const mode = m && m.mode;
+          if (mode === 'speaking') showStatus('Speaking…', 'speaking');
+          else showStatus('Listening…', 'listening');
+        }
+      });
+    } catch (e) {
+      busy = false;
+      if (btn) btn.disabled = false;
+      setState('idle');
+      setLabel('Take the audio guide');
+      const name = (e && e.name) || '';
+      const text = String((e && e.message) || e || '');
+      if (name === 'NotAllowedError' || /permission|denied|not.?allowed/i.test(text)) {
+        showError('I need microphone access to talk — enable it in your browser and tap again.');
+      } else if (name === 'NotFoundError' || /no.*(microphone|audio|device)/i.test(text)) {
+        showError('No microphone found. Connect one and tap again.');
+      } else {
+        showError('Couldn’t start the concierge. Please try again.');
+      }
+    }
+  }
+
+  async function stop() {
+    if (conversation) {
+      try { await conversation.endSession(); } catch (e) {}
+    }
+    resetControls();
+    restoreNote();
+  }
+
+  if (btn) {
+    btn.addEventListener('click', function () {
+      if (conversation) stop();
+      else start();
+    });
+  }
 </script>
 
 </body>
