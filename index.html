@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ori Feinberg — Performance marketing, agentic automation, a painter's eye</title>
+<meta name="description" content="Ori Feinberg combines performance-marketing rigor, art-world taste, and hands-on agentic automation — increasingly making the marketing machine run itself." />
+
+<!-- Fonts: Archivo (UI/display grotesque) + Archivo Expanded (large display) + Newsreader (catalog-essay serif) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Expanded:wght@600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    /* --- Palette: gallery-white + ink, one ultramarine accent held in reserve --- */
+    --paper:      #F6F6F3;
+    --paper-2:    #EFEFEA;
+    --ink:        #1B1A17;
+    --ink-soft:   #57554E;
+    --ink-faint:  #8B897F;
+    --line:       #D7D6CE;
+    --accent:     #223089;   /* ultramarine — used ONLY for the audio guide + result metrics */
+    --accent-ink: #1A2568;
+
+    /* --- Type --- */
+    --sans: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sans-wide: "Archivo Expanded", "Archivo", system-ui, sans-serif;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+
+    /* --- Rhythm --- */
+    --gutter: clamp(1.25rem, 5vw, 6rem);
+    --section-gap: clamp(4.5rem, 11vw, 9rem);
+    --measure: 60ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .masthead .wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.05rem;
+  }
+  .mark {
+    font-family: var(--sans-wide);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-size: 1.02rem;
+    text-decoration: none;
+  }
+  .nav {
+    display: flex;
+    gap: clamp(0.9rem, 3vw, 2.1rem);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: color .18s, border-color .18s;
+  }
+  .nav a:hover { color: var(--ink); border-color: var(--ink); }
+  @media (max-width: 620px) {
+    .nav a:not(.nav-primary) { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-block: clamp(4rem, 12vw, 8.5rem) clamp(3rem, 8vw, 6rem); }
+  .hero-eyebrow {
+    font-size: 0.86rem;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin: 0 0 clamp(1.4rem, 4vw, 2.4rem);
+    max-width: 34ch;
+  }
+  .statement {
+    font-family: var(--sans-wide);
+    font-weight: 800;
+    font-size: clamp(1.9rem, 6.2vw, 4.15rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0;
+    max-width: 18ch;
+  }
+  .statement span { display: block; }
+  .statement .turn { color: var(--accent); }
+
+  /* one orchestrated reveal on load */
+  .statement span,
+  .hero-eyebrow,
+  .guide { opacity: 0; transform: translateY(14px); animation: rise .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  .hero-eyebrow { animation-delay: .05s; }
+  .statement span:nth-child(1) { animation-delay: .16s; }
+  .statement span:nth-child(2) { animation-delay: .26s; }
+  .statement span:nth-child(3) { animation-delay: .36s; }
+  .statement span:nth-child(4) { animation-delay: .46s; }
+  .guide { animation-delay: .62s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .statement span, .hero-eyebrow, .guide { opacity: 1; transform: none; animation: none; }
+  }
+
+  /* ---------- Audio guide (the voice agent) ---------- */
+  .guide {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .guide-btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.95rem 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    transition: background .18s, transform .12s;
+  }
+  .guide-btn:hover { background: var(--accent-ink); }
+  .guide-btn:active { transform: translateY(1px); }
+  .guide-btn .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--paper) 70%, transparent);
+    animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--paper) 55%, transparent); }
+    70% { box-shadow: 0 0 0 9px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) { .guide-btn .dot { animation: none; } }
+  .guide-note { font-size: 0.92rem; color: var(--ink-soft); max-width: 32ch; }
+
+  .guide-panel {
+    margin-top: 1.4rem;
+    border: 1px dashed var(--line);
+    background: var(--paper-2);
+    padding: 1.1rem 1.25rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    display: none;
+  }
+  .guide-panel.open { display: block; }
+  .guide-panel code { font-size: 0.82rem; }
+
+  /* ---------- Section scaffolding ---------- */
+  section { padding-block: var(--section-gap); }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    border-top: 1px solid var(--ink);
+    padding-top: 0.85rem;
+    margin-bottom: clamp(2rem, 5vw, 3.2rem);
+  }
+  .section-head h2 {
+    font-family: var(--sans-wide);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .section-head .idx {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Approach / About: catalog essays ---------- */
+  .essay {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 1.9vw, 1.4rem);
+    line-height: 1.62;
+    max-width: var(--measure);
+    color: var(--ink);
+  }
+  .essay p { margin: 0 0 1.15em; }
+  .essay p:last-child { margin-bottom: 0; }
+  .essay .lede { font-size: 1.08em; }
+
+  /* ---------- Selected work ---------- */
+  .work-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+    padding-block: clamp(2.2rem, 5vw, 3.4rem);
+    border-top: 1px solid var(--line);
+  }
+  .work-item:first-of-type { border-top: none; padding-top: 0; }
+  @media (min-width: 860px) {
+    .work-item { grid-template-columns: 15rem minmax(0, 1fr); gap: 3rem; }
+  }
+
+  .label { align-self: start; }
+  .label .cat {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.7rem;
+  }
+  .label h3 {
+    font-family: var(--sans-wide);
+    font-weight: 700;
+    font-size: 1.28rem;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.8rem;
+  }
+  .label .medium {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.4;
+    margin: 0 0 1rem;
+  }
+  .result {
+    display: inline-block;
+    font-family: var(--sans-wide);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .result small {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 500;
+    color: var(--ink-faint);
+    font-size: 0.74rem;
+    letter-spacing: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  .work-body p { max-width: 54ch; color: var(--ink-soft); margin: 0 0 1.1rem; }
+  .work-body p strong { color: var(--ink); font-weight: 600; }
+
+  /* redrawn flow diagram — the clean version, never a raw n8n canvas */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 0 1.4rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .flow .stage {
+    flex: 1 1 auto;
+    min-width: 8.5rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.86rem;
+    line-height: 1.25;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .flow .stage:last-child { border-right: none; }
+  .flow .stage b { display: block; font-weight: 600; }
+  .flow .stage span { color: var(--ink-faint); font-size: 0.78rem; }
+
+  /* three-finding "wall pieces" for the analysis case */
+  .findings { list-style: none; margin: 0 0 1.4rem; padding: 0; display: grid; gap: 0; }
+  .findings li {
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--serif);
+    font-size: 1.08rem;
+    line-height: 1.4;
+  }
+  .findings li:first-child { border-top: none; padding-top: 0; }
+  .findings li b { font-weight: 500; font-style: italic; }
+
+  /* click-to-play video poster (Loom goes here) */
+  .poster {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    overflow: hidden;
+    text-align: left;
+    padding: 0;
+    font-family: inherit;
+    color: var(--ink-soft);
+    margin: 0 0 1.2rem;
+  }
+  .poster .meta {
+    position: absolute;
+    left: 1rem; bottom: 0.9rem;
+    font-size: 0.82rem;
+  }
+  .poster .play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: grid;
+    place-items: center;
+    transition: transform .16s, background .16s;
+  }
+  .poster:hover .play { transform: translate(-50%, -50%) scale(1.06); background: var(--accent); }
+  .poster .play svg { margin-left: 3px; }
+
+  /* expandable detail */
+  details.detail {
+    border-top: 1px solid var(--line);
+    padding-top: 0.8rem;
+  }
+  details.detail summary {
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  details.detail summary::-webkit-details-marker { display: none; }
+  details.detail summary .chev { transition: transform .18s; }
+  details.detail[open] summary .chev { transform: rotate(90deg); }
+  details.detail .detail-body {
+    padding-top: 1rem;
+    max-width: 58ch;
+    color: var(--ink-soft);
+    font-size: 0.96rem;
+  }
+
+  .placeholder-flag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    padding: 0.15rem 0.45rem;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+  }
+
+  /* ---------- Capabilities ---------- */
+  .caps { display: grid; gap: 0; }
+  .caps .cap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem 3rem;
+    padding-block: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+  .caps .cap:first-child { border-top: none; }
+  @media (min-width: 720px) {
+    .caps .cap { grid-template-columns: 16rem minmax(0, 1fr); }
+  }
+  .caps .cap h3 {
+    font-family: var(--sans-wide);
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .caps .cap p { margin: 0; color: var(--ink-soft); max-width: 52ch; }
+
+  /* ---------- Contact ---------- */
+  .contact-grid { display: grid; gap: 2.4rem; }
+  @media (min-width: 760px) { .contact-grid { grid-template-columns: 1.1fr 1fr; align-items: end; } }
+  .contact-lead {
+    font-family: var(--sans-wide);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin: 0;
+    max-width: 16ch;
+  }
+  .links { list-style: none; margin: 0; padding: 0; }
+  .links li { border-top: 1px solid var(--line); }
+  .links li:last-child { border-bottom: 1px solid var(--line); }
+  .links a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.95rem 0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: padding-left .18s, color .18s;
+  }
+  .links a:hover { padding-left: 0.5rem; color: var(--accent); }
+  .links a .kind { color: var(--ink-faint); font-size: 0.82rem; font-weight: 500; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--ink);
+    padding-block: 2.2rem 3rem;
+  }
+  footer .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a href="#top" class="mark">Ori Feinberg</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#approach">Approach</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="nav-primary">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-labelledby="statement">
+    <div class="wrap">
+      <p class="hero-eyebrow">Performance marketing, agentic automation, and a painter's eye — in one person.</p>
+      <h1 class="statement" id="statement">
+        <span>Most marketers can't design.</span>
+        <span>Most designers can't run acquisition.</span>
+        <span>Almost no one wires the automation.</span>
+        <span class="turn">I do all three — and I'm making it run itself.</span>
+      </h1>
+
+      <div class="guide">
+        <button class="guide-btn" id="guideBtn" aria-expanded="false" aria-controls="guidePanel">
+          <span class="dot" aria-hidden="true"></span>
+          Take the audio guide
+        </button>
+        <p class="guide-note">It's my voice, cloned. Ask the concierge anything about the work — it'll tell you what it doesn't know.</p>
+      </div>
+
+      <!--
+        ============================================================
+        VOICE AGENT GOES HERE (Phase 1 wiring)
+        Replace the placeholder panel below with the ElevenLabs widget:
+
+          <elevenlabs-convai agent-id="YOUR_AGENT_ID"></elevenlabs-convai>
+          <script src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+                  async type="text/javascript"></script>
+
+        Cost controls to set on the agent before it goes public:
+        session length cap · auto-hangup on silence · light gating.
+        Wire the transcript/lead → n8n → CRM for capture (Phase 2).
+        ============================================================
+      -->
+      <div class="guide-panel" id="guidePanel" role="region" aria-label="About the audio guide">
+        <strong>Placeholder — the live agent isn't wired yet.</strong><br />
+        This button will open the ElevenLabs voice widget (my cloned voice, grounded in a
+        tight knowledge base of real projects). Drop the <code>&lt;elevenlabs-convai&gt;</code>
+        embed where the comment is in the source, set the cost caps, and connect the
+        lead capture to n8n.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ APPROACH ============ -->
+  <section id="approach" aria-labelledby="approach-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="approach-h">The approach</h2>
+        <span class="idx">01</span>
+      </div>
+      <div class="essay">
+        <p class="lede">I come at growth from two directions most people never combine.</p>
+        <p>A quarter-century of painting and a decade inside the art world taught me to judge
+          whether a thing is any good — the taste half. Performance marketing taught me to
+          prove it with money and data — the rigor half. Because I build the automation layer
+          myself, the two stop being a handoff between departments: a creative call becomes a
+          test, a test becomes a workflow, and the workflow runs without me.</p>
+        <p>That last part is where most of my time goes now — turning the parts of marketing
+          that used to need a person into agents that don't.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SELECTED WORK ============ -->
+  <section id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="work-h">Selected work</h2>
+        <span class="idx">02</span>
+      </div>
+
+      <!-- cat.01 — the concierge (this site) -->
+      <article class="work-item">
+        <div class="label">
+          <div class="cat">cat. 01</div>
+          <h3>A concierge that speaks in my voice</h3>
+          <p class="medium">ElevenLabs voice agent, n8n lead capture</p>
+          <span class="result"><small>Live proof</small>You're using it right now.</span>
+        </div>
+        <div class="work-body">
+          <p>The audio guide on this page is the case study. It's a transparent AI concierge —
+            my cloned voice, but it introduces itself as an assistant, never pretends to be me.
+            It answers recruiters' and clients' questions from a grounded knowledge base, and
+            when it doesn't know something it says so and points to the contact links rather
+            than improvising.</p>
+          <p><strong>Why it matters:</strong> the thing I'm selling — voice, agents, and n8n
+            automation — is demonstrated by the medium you're hearing it through.</p>
+          <details class="detail">
+            <summary><span class="chev">›</span> How it's built</summary>
+            <div class="detail-body">
+              Instant Voice Cloning on ElevenLabs, running on the low-latency Flash model for
+              real conversation. The agent is grounded in a curated Q&amp;A knowledge base and
+              hard-instructed not to speculate about my experience. Every conversation can hand
+              a lead to an n8n flow that logs to a CRM and offers to book a call — the same
+              autonomous loop I build for clients.
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <!-- cat.02 — telehealth analysis (Helfy, anonymized) -->
+      <article class="work-item">
+        <div class="label">
+          <div class="cat">cat. 02</div>
+          <h3>Reading an account against its own assumptions</h3>
+          <p class="medium">Paid acquisition &amp; creative analysis — European telehealth (client anonymized)</p>
+          <span class="result"><small>Outcome</small>3 targeting beliefs overturned by the data</span>
+        </div>
+        <div class="work-body">
+          <p>A go-to-market and creative audit for a telehealth brand entering a new market.
+            The interesting part wasn't the plan — it was where the campaign data flatly
+            contradicted what everyone assumed was working:</p>
+          <ul class="findings">
+            <li><b>Static creative beat UGC</b> on share of genuinely new customers.</li>
+            <li><b>Broad targeting beat lookalikes</b> — the "safe" audience was the expensive one.</li>
+            <li><b>Hook rate barely correlated with acquisition</b> — the vanity metric wasn't the buying signal.</li>
+          </ul>
+          <p><strong>The deliverable:</strong> a UGC scoring rubric and a media read that told
+            the client which of their beliefs the numbers didn't support.</p>
+          <details class="detail">
+            <summary><span class="chev">›</span> Method &amp; framing note</summary>
+            <div class="detail-body">
+              Presented as approach and analytical calls only — the client's brief, names, and
+              raw data are withheld. The value on display is the diagnostic method: isolating
+              new-customer share from re-engagement, separating creative-attention metrics from
+              purchase behaviour, and pressure-testing targeting orthodoxy against spend.
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <!-- cat.03 — n8n workflow (PLACEHOLDER, illustrative) -->
+      <article class="work-item">
+        <div class="label">
+          <div class="cat">cat. 03</div>
+          <h3>Lead response, fully automated <span class="placeholder-flag">sample — swap in a real flow</span></h3>
+          <p class="medium">n8n workflow, enrichment &amp; routing</p>
+          <span class="result"><small>Result</small>4 hours&nbsp;→&nbsp;90 seconds</span>
+        </div>
+        <div class="work-body">
+          <div class="flow" role="img" aria-label="Workflow: inbound form to enrichment to scoring to instant reply to CRM log to booked call">
+            <div class="stage"><b>Inbound form</b><span>lead arrives</span></div>
+            <div class="stage"><b>Enrich</b><span>Clay lookup</span></div>
+            <div class="stage"><b>Score &amp; route</b><span>fit + intent</span></div>
+            <div class="stage"><b>Instant reply</b><span>personalised</span></div>
+            <div class="stage"><b>Log + book</b><span>CRM · calendar</span></div>
+          </div>
+          <button class="poster" aria-label="Play the narrated walkthrough (video not yet added)">
+            <span class="play" aria-hidden="true">
+              <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor"><path d="M0 0l16 9L0 18z"/></svg>
+            </span>
+            <span class="meta">Narrated walkthrough — 90s · add Loom embed</span>
+          </button>
+          <p>The clean flow above is the entry point — never a raw n8n canvas. The narrated
+            Loom sits behind the poster and plays on click.</p>
+          <details class="detail">
+            <summary><span class="chev">›</span> Technical detail</summary>
+            <div class="detail-body">
+              Placeholder copy for the engaged evaluator — replace with a real shipped flow.
+              Redaction reminder before recording: scrub every API key, webhook URL, token,
+              and client name from node configs and execution payloads, and don't read any of
+              them aloud in narration. Record against dummy data or a pre-redacted canvas.
+            </div>
+          </details>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ CAPABILITIES ============ -->
+  <section id="capabilities" aria-labelledby="cap-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="cap-h">What I can build for you</h2>
+        <span class="idx">03</span>
+      </div>
+      <div class="caps">
+        <div class="cap">
+          <h3>Agentic marketing automation</h3>
+          <p>n8n workflows that qualify, route, and follow up on leads on their own — the boring
+            middle of your funnel, running without you.</p>
+        </div>
+        <div class="cap">
+          <h3>Paid acquisition &amp; creative testing</h3>
+          <p>Campaigns set up, measured, and read for what actually drives new customers — not
+            the metrics that only look like progress.</p>
+        </div>
+        <div class="cap">
+          <h3>AI voice &amp; agent builds</h3>
+          <p>Grounded, on-brand voice and chat agents — like the concierge on this page —
+            with cost caps and honest "I don't know" behaviour built in.</p>
+        </div>
+        <div class="cap">
+          <h3>Growth analysis</h3>
+          <p>An audit that tells you which of your assumptions the data doesn't support, and
+            what to do about it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="about-h">The path here</h2>
+        <span class="idx">04</span>
+      </div>
+      <div class="essay">
+        <p class="lede">I started as a painter, and I've never stopped.</p>
+        <p>Twenty-five years at the easel, an MA in contemporary art from Sotheby's Institute in
+          New York, and a run directing a contemporary gallery in Tel Aviv taught me the part of
+          this work you can't A/B test: whether something is actually any good. Alongside it, a
+          computer science degree from IDC Herzliya gave me the other half — I could always
+          build the thing, not just brief it.</p>
+        <p>Those two tracks stayed separate for years until performance marketing turned out to
+          be where they finally met: a discipline that rewards taste and demands proof, and that
+          increasingly runs on the exact automation I like to build. So that's what I do now —
+          sit at the seam between the marketer, the builder, and the artist, and make the machine
+          in the middle run itself.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="contact-h">Get in touch</h2>
+        <span class="idx">05</span>
+      </div>
+      <div class="contact-grid">
+        <p class="contact-lead">Hiring, or need something built? Start a conversation.</p>
+        <ul class="links">
+          <li><a href="#" data-placeholder><span>LinkedIn</span><span class="kind">profile →</span></a></li>
+          <li><a href="mailto:hello@example.com" data-placeholder><span>Email</span><span class="kind">hello@ — add address →</span></a></li>
+          <li><a href="#" data-placeholder><span>Book a call</span><span class="kind">Cal.com / Calendly →</span></a></li>
+          <li><a href="#top"><span>Or ask the concierge to take a message</span><span class="kind">audio guide →</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Ori Feinberg</span>
+    <span>Built in code on Vercel · voice by ElevenLabs · automation by n8n</span>
+  </div>
+</footer>
+
+<script>
+  // Audio-guide placeholder toggle. Replace this whole block once the
+  // ElevenLabs widget is embedded — the widget handles its own open/close.
+  (function () {
+    var btn = document.getElementById('guideBtn');
+    var panel = document.getElementById('guidePanel');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', function () {
+      var open = panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  })();
+
+  // Keep placeholder links from jumping anywhere until real URLs are added.
+  document.querySelectorAll('a[data-placeholder]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (a.getAttribute('href') === '#') e.preventDefault();
+    });
+  });
+</script>
+
+</body>
+</html>
