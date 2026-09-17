@@ -810,6 +810,10 @@
   let sessionPromise = null;
   let busy = false;
   let active = false;
+  let capTimer = null;
+  let idleTimer = null;
+  const MAX_SESSION_MS = 300000; // 5-minute hard cap on any single call (cost safety)
+  const IDLE_MS = 45000;         // auto-end after 45s with no conversational activity
 
   // Load the SDK. Wrapped so a CDN failure degrades gracefully.
   let Conversation = null;
@@ -828,6 +832,19 @@
     if (mode) statusEl.dataset.mode = mode;
   }
   function hideStatus() { if (statusEl) statusEl.hidden = true; }
+  function clearTimers() {
+    if (capTimer)  { clearTimeout(capTimer);  capTimer  = null; }
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+  }
+  function bumpIdle() {
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(function () { stop(); }, IDLE_MS);
+  }
+  function armTimers() {
+    clearTimers();
+    capTimer = setTimeout(function () { stop(); }, MAX_SESSION_MS);
+    bumpIdle();
+  }
   function restoreNote() {
     if (!note) return;
     note.hidden = false;
@@ -841,6 +858,7 @@
     note.textContent = msg;
   }
   function resetControls() {
+    clearTimers();
     busy = false;
     active = false;
     conversation = null;
@@ -870,6 +888,7 @@
           setState('active');
           setLabel('End conversation');
           showStatus('Listening…', 'listening');
+          armTimers();
         },
         onDisconnect: function () { resetControls(); restoreNote(); },
         onError: function (err) {
@@ -877,6 +896,7 @@
           showError('The concierge ran into a problem. Please try again.');
         },
         onModeChange: function (m) {
+          bumpIdle();
           const mode = m && m.mode;
           if (mode === 'speaking') showStatus('Speaking…', 'speaking');
           else showStatus('Listening…', 'listening');
