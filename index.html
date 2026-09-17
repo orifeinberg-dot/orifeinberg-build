@@ -194,6 +194,34 @@
   .guide-panel.open { display: block; }
   .guide-panel code { font-size: 0.82rem; }
 
+  /* ---------- Track record (figures band) ---------- */
+  .record { padding-block: clamp(2.6rem, 6vw, 4.2rem); }
+  .record-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.8rem 2.5rem;
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(1.6rem, 4vw, 2.2rem);
+  }
+  @media (min-width: 720px) { .record-grid { grid-template-columns: repeat(3, 1fr); } }
+  .figure .num {
+    font-family: var(--sans-wide);
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .figure .num span { font-size: 0.5em; font-weight: 700; color: var(--ink-faint); letter-spacing: 0; }
+  .figure .lab {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    max-width: 26ch;
+  }
+  .record-note { margin: 1.6rem 0 0; font-size: 0.83rem; color: var(--ink-faint); }
+
   /* ---------- Section scaffolding ---------- */
   section { padding-block: var(--section-gap); }
   .section-head {
@@ -493,26 +521,36 @@
       </div>
 
       <!--
-        ============================================================
-        VOICE AGENT GOES HERE (Phase 1 wiring)
-        Replace the placeholder panel below with the ElevenLabs widget:
-
-          <elevenlabs-convai agent-id="YOUR_AGENT_ID"></elevenlabs-convai>
-          <script src="https://unpkg.com/@elevenlabs/convai-widget-embed"
-                  async type="text/javascript"></script>
-
-        Cost controls to set on the agent before it goes public:
-        session length cap · auto-hangup on silence · light gating.
-        Wire the transcript/lead → n8n → CRM for capture (Phase 2).
-        ============================================================
+        The concierge is wired below in the page script, gated on a single
+        ELEVENLABS_AGENT_ID constant. Until that ID is set, the note below shows
+        instead of a broken widget, so the site is safe to ship early.
+        See voice-agent/agent-setup.md for the full build kit.
       -->
       <div class="guide-panel" id="guidePanel" role="region" aria-label="About the audio guide">
-        <strong>Placeholder — the live agent isn't wired yet.</strong><br />
-        This button will open the ElevenLabs voice widget (my cloned voice, grounded in a
-        tight knowledge base of real projects). Drop the <code>&lt;elevenlabs-convai&gt;</code>
-        embed where the comment is in the source, set the cost caps, and connect the
-        lead capture to n8n.
+        The concierge is warming up. In the meantime, the work speaks for itself below —
+        or reach out directly via the <a href="#contact">contact links</a>.
       </div>
+    </div>
+  </section>
+
+  <!-- ============ TRACK RECORD ============ -->
+  <section class="record" aria-label="Track record">
+    <div class="wrap">
+      <div class="record-grid">
+        <div class="figure">
+          <div class="num">$400K<span>/mo</span></div>
+          <div class="lab">Media budget owned across Google, Meta, Bing &amp; Criteo — 12 European markets.</div>
+        </div>
+        <div class="figure">
+          <div class="num">−55%<span> CPA</span></div>
+          <div class="lab">Cost-per-acquisition cut on US direct-to-consumer, at 20% month-over-month new-user growth.</div>
+        </div>
+        <div class="figure">
+          <div class="num">£1M<span>/mo</span></div>
+          <div class="lab">UK &amp; Ireland search account scaled from launch to top-three in a competitive market.</div>
+        </div>
+      </div>
+      <p class="record-note">Figures from recent senior user-acquisition roles — Tenengroup, Lin Health, Nexar, Optival.</p>
     </div>
   </section>
 
@@ -727,16 +765,51 @@
 </footer>
 
 <script>
-  // Audio-guide placeholder toggle. Replace this whole block once the
-  // ElevenLabs widget is embedded — the widget handles its own open/close.
+  /* ============================================================
+     VOICE CONCIERGE (ElevenLabs)
+     Paste your Agent ID between the quotes below and redeploy.
+     Get it from the ElevenLabs agent settings (looks like agent_xxxx).
+     Full build kit: voice-agent/agent-setup.md
+     ============================================================ */
+  const ELEVENLABS_AGENT_ID = ""; // <-- paste your agent_xxxx id here
+
   (function () {
     var btn = document.getElementById('guideBtn');
     var panel = document.getElementById('guidePanel');
-    if (!btn || !panel) return;
-    btn.addEventListener('click', function () {
-      var open = panel.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(open));
-    });
+    var note = document.querySelector('.guide-note');
+
+    if (ELEVENLABS_AGENT_ID) {
+      // --- Live: load the official ElevenLabs widget ---
+      var widget = document.createElement('elevenlabs-convai');
+      widget.setAttribute('agent-id', ELEVENLABS_AGENT_ID);
+      document.body.appendChild(widget);
+
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+      s.async = true;
+      s.type = 'text/javascript';
+      document.body.appendChild(s);
+
+      // Hero button surfaces / opens the concierge.
+      if (btn) {
+        btn.setAttribute('aria-controls', 'elevenlabs-concierge');
+        btn.addEventListener('click', function () {
+          var w = document.querySelector('elevenlabs-convai');
+          if (!w) return;
+          w.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          // Best-effort open; the floating launcher is always available regardless.
+          try { w.click(); } catch (e) {}
+        });
+      }
+    } else {
+      // --- Not yet wired: graceful note, no broken widget ---
+      if (btn && panel) {
+        btn.addEventListener('click', function () {
+          var open = panel.classList.toggle('open');
+          btn.setAttribute('aria-expanded', String(open));
+        });
+      }
+    }
   })();
 
   // Keep placeholder links from jumping anywhere until real URLs are added.
