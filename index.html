@@ -818,7 +818,7 @@
   // Load the SDK. Wrapped so a CDN failure degrades gracefully.
   let Conversation = null;
   try {
-    ({ Conversation } = await import('https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm'));
+    ({ Conversation } = await import('https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.27.0/+esm'));
   } catch (e) {
     Conversation = null;
   }
@@ -881,6 +881,7 @@
     try {
       sessionPromise = Conversation.startSession({
         agentId: AGENT_ID,
+        connectionType: 'websocket', // pinned to the WebSocket path (the WebRTC default fails on a plain public page)
         onConnect: function () {
           busy = false;
           active = true;
