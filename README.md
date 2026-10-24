@@ -1,66 +1,45 @@
-# orifeinberg — builder site
+# build.orifeinberg.com
 
-Static one-page portfolio hub. Deploys to Vercel as-is (no build step).
-Target address: **work.orifeinberg.com** (a subdomain of the existing art site).
+Static site on Vercel. On every push, Vercel runs `node build.mjs`, which builds the site into
+`dist/` and serves that. No dependencies, nothing to install, nothing that updates itself.
 
 ```
-.
-├── index.html      the whole site (self-contained: HTML + CSS + a little JS)
-├── vercel.json     security headers
-├── .gitignore
-└── README.md       this file
+src/index.html              homepage (edit this, not dist/)
+templates/project.html      the one template every project page uses
+content/projects/<slug>.md  one file per project: card fields + the five blocks
+public/projects/<slug>/     that project's images, PDFs, self-contained HTML
+build.mjs                   turns the above into dist/
 ```
 
----
+## Adding a project
 
-## Deploy in three moves
+The full process and checklist is in `docs/adding-a-project.md`. The mechanics:
 
-### 1. Put it on GitHub
-Create an empty repo (e.g. `orifeinberg-work`), then from this folder:
+1. Copy `content/projects/_template.md` to `content/projects/<slug>.md` and fill it in.
+   The file name becomes the URL: `ad-intelligence.md` → `/projects/ad-intelligence/`.
+2. Put its files in `public/projects/<slug>/` and refer to them by name in the content file.
+3. Push. The page and the homepage card appear on their own.
 
-```bash
-git init
-git add .
-git commit -m "Phase 1 — portfolio hub"
-git branch -M main
-git remote add origin git@github.com:<you>/orifeinberg-work.git
-git push -u origin main
-```
+Keep `draft: true` in the header while you work. Drafts are checked but never published.
 
-### 2. Import to Vercel
-- vercel.com → **Add New… → Project** → import the repo.
-- Framework preset: **Other** (it's plain static — no build command, no output dir).
-- Deploy. You'll get a live `…vercel.app` URL. Confirm the site looks right there first.
+The homepage lists projects newest first by `date` (the day a project first went live).
+Hand-written cards in `src/index.html` need a `data-date`; one with `data-slug="x"` is
+replaced automatically once `content/projects/x.md` is published.
 
-### 3. Attach the subdomain (the only fiddly bit)
-This is where `work.orifeinberg.com` gets pointed at Vercel **without touching the art site.**
+## What the build checks
 
-1. In the Vercel project → **Settings → Domains** → add `work.orifeinberg.com`.
-2. Vercel shows you a DNS record to create. For a subdomain it's a **CNAME**:
-   - **Type:** CNAME
-   - **Name/Host:** `work`
-   - **Value/Target:** the hostname Vercel gives you (typically `cname.vercel-dns.com` — use the exact one shown).
-3. Add that record **wherever the DNS for `orifeinberg.com` is managed** — this is your registrar *or* the host of the art site (e.g. Squarespace/Wix/Cloudflare, if that's where the paintings site lives). You need to know where that is; see the note below.
-4. Save. Vercel auto-issues the HTTPS certificate once the record resolves (usually minutes, up to a couple of hours).
+The build fails, and the live site stays as it was, if a project has:
+- a hook that isn't a question
+- missing or out-of-order sections (Hook, Insight, Visual payoff, How it works, What I learned)
+- no image, GIF or video in the visual payoff
+- a link or image pointing at a file that isn't in its `public/projects/<slug>/` folder
+- leftover placeholder text (TODO, TBD, "[your …")
+- a card without exactly 3 tags, or no `date: YYYY-MM-DD`
 
-**Nothing about the art site changes.** You're adding one new `work` record. The apex `orifeinberg.com` keeps its existing records and keeps serving the paintings.
+It warns (but still deploys) on: length outside 250–450 words, fewer than 3 or more than 5
+steps, images over 600 KB, and no code link. It also lists every external link so you can
+confirm none points at a private repo; it can't check that for you.
 
-> **Where is your DNS?** Whoever you point `orifeinberg.com`'s nameservers to controls DNS. If the art site is on a website builder, its DNS panel is usually inside that builder's dashboard. If unsure, a WHOIS lookup on `orifeinberg.com` shows the nameservers, which tells you where to add the CNAME.
+## Preview locally
 
-### Changing the prefix
-Want `build.` or `studio.` instead of `work.`? Just use that word as the CNAME **Name** and add that domain in Vercel instead. No code change.
-
----
-
-## Before you share the URL — fill these in
-
-The site is live-able immediately, but these are still placeholders (all marked in the source):
-
-- [ ] **Contact links** — real LinkedIn URL, email, and book-a-call link (search `data-placeholder` in `index.html`).
-- [ ] **Voice agent** — drop the `<elevenlabs-convai>` embed where the comment block is in the hero, once you have an agent ID. Set the cost caps first.
-- [ ] **Case study 03** — currently a labelled sample (`sample — swap in a real flow`). Replace with a real n8n workflow, or remove.
-- [ ] **Helfy / case study 02** — confirm the anonymized framing stays, or swap for a real client flow.
-- [ ] **Loom walkthroughs** — replace the poster placeholder with the real embed when recorded (redact everything first).
-- [ ] *(optional)* a favicon, and a cross-link to `orifeinberg.com` in the About section.
-
-None of these block going live — you can ship with placeholders and fill them in as you go, since every push auto-redeploys.
+`npm run preview`, then open http://localhost:8080 (needs Node 18+ and Python 3).
