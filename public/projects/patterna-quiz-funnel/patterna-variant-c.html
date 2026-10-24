@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patterna — Free IQ Test</title>
+<meta name="description" content="A free cognitive assessment covering visual, logical and numerical reasoning.">
+<meta name="theme-color" content="#F4F2EC">
+<style>
+:root{
+  --bg:#F4F2EC; --surface:#FFFFFF; --ink:#0F1330; --ink2:#454B66; --muted:#5C627E;
+  --line:#DAD7CC; --line2:#C4C0B2;
+  --pri:#2438F5; --pri-d:#1B2BD0; --pri-t:#E8EBFF; --pri-l:#98A3FF;
+  --good:#0D7A52; --good-t:#E0F3EA; --bad:#B3321B; --bad-t:#FBE8E3;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  --shadow:0 1px 2px rgba(15,19,48,.05),0 10px 30px rgba(15,19,48,.07);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+h1,h2,h3,p,ul{margin:0}
+ul{padding:0;list-style:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:100%;max-width:1040px;margin:0 auto;padding-left:20px;padding-right:20px}
+.top-in{height:56px;display:flex;align-items:center}
+.logo{display:inline-flex;align-items:center;gap:9px;font:800 22px/1 var(--sans);letter-spacing:-.02em}
+.logo svg{width:30px;height:30px;display:block}
+.logo i{font-style:normal;font-weight:500;color:var(--pri)}
+main{outline:none;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+h1:focus{outline:none}
+
+/* ---------- shared bits ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:0 24px;border:0;border-radius:14px;background:var(--pri);color:#fff;font:650 17px/1.2 var(--sans);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 16px rgba(36,56,245,.26);transition:background .12s,transform .06s}
+.btn:hover{background:var(--pri-d)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible,.link:focus-visible,.back:focus-visible,.pwtoggle:focus-visible,.rv summary:focus-visible,.btn-o:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn-o{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:54px;padding:0 18px;background:#fff;border:2px solid var(--ink);border-radius:14px;font:650 16px/1.2 var(--sans);cursor:pointer;touch-action:manipulation}
+.btn-o:hover{background:var(--ink);color:#fff}
+.btn-o .chev{width:10px;height:10px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);transition:transform .15s}
+.btn-o[aria-expanded="true"] .chev{transform:rotate(-135deg) translate(-2px,-2px)}
+.link{background:none;border:0;padding:10px 4px;color:var(--ink2);font:600 14px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.fine{font-size:13.5px;line-height:1.4;color:var(--muted);text-align:center}
+.eyebrow{display:inline-block;font:700 11.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--pri);background:var(--pri-t);padding:7px 11px;border-radius:999px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+
+/* ---------- welcome ---------- */
+.welcome{display:flex;flex-direction:column;min-height:calc(100vh - 56px);min-height:calc(100dvh - 56px);padding-top:6px}
+.hero{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.hero h1{font:700 clamp(30px,8.6vw,64px)/1.04 var(--serif);letter-spacing:-.025em}
+.lede{font-size:16.5px;line-height:1.5;color:var(--ink2);max-width:34em}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.facts li{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:#fff;border:1px solid var(--line);border-radius:999px;font:600 13.5px/1 var(--sans);color:var(--ink)}
+.facts svg{width:15px;height:15px;color:var(--pri)}
+.cats{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cats-h{display:none}
+.cat{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;background:#fff;border:1px solid var(--line);border-radius:14px;text-align:center}
+.cat-ico{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--pri-t);color:var(--pri)}
+.cat-ico svg{width:22px;height:22px}
+.cat-t{display:flex;flex-direction:column;gap:1px}
+.cat-t b{font:700 13.5px/1.2 var(--sans)}
+.cat-t small{display:none}
+.cat-t i{font:500 12px/1.3 var(--sans);font-style:normal;color:var(--muted)}
+.lab-l{display:none}
+.cta{margin-top:auto;position:sticky;bottom:0;z-index:2;margin-left:-20px;margin-right:-20px;padding:14px 20px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,rgba(244,242,236,0),var(--bg) 16px);display:flex;flex-direction:column;gap:10px}
+@media (max-height:640px){.hero{gap:10px}.lede{font-size:15px}.cats{margin-top:12px}.cat{padding:9px 4px}}
+/* taller phones: use the spare height for descriptive category rows instead of dead space */
+@media (max-width:639px) and (min-height:720px){
+  .hero{margin-top:clamp(0px,2.5vh,28px)}
+  .cats{grid-template-columns:1fr;gap:10px;margin-top:clamp(18px,3.5vh,34px)}
+  .cat{flex-direction:row;align-items:center;gap:14px;padding:13px 14px;text-align:left}
+  .cat-ico{width:42px;height:42px;border-radius:12px}
+  .cat-ico svg{width:24px;height:24px}
+  .cat-t b{font-size:15.5px}
+  .cat-t small{display:block;font-size:13.5px;line-height:1.35;color:var(--ink2)}
+  .lab-s{display:none}.lab-l{display:inline}
+}
+
+/* ---------- quiz ---------- */
+.quiz{max-width:640px;margin:0 auto}
+.qhead{display:flex;align-items:center;gap:12px;height:56px}
+.back{flex:none;width:44px;height:44px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.back:hover{border-color:var(--ink2)}
+.back svg{width:20px;height:20px}
+.prog{flex:1;height:8px;background:#E4E1D6;border-radius:99px;overflow:hidden}
+.prog span{display:block;height:100%;background:var(--pri);border-radius:99px;transition:width .25s ease}
+.count{flex:none;min-width:44px;text-align:right;font:600 14px var(--sans);color:var(--muted);font-variant-numeric:tabular-nums}
+.count b{color:var(--ink)}
+.qcard{margin-top:6px;padding:18px 16px 16px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.tag{display:inline-block;font:700 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--pri);background:var(--pri-t);padding:6px 10px;border-radius:999px}
+.prompt{margin-top:12px;font:700 21px/1.28 var(--sans);letter-spacing:-.01em}
+.lead{margin-top:14px;display:grid;gap:8px}
+.lead-p{font-size:15.5px;color:var(--ink2)}
+.clues{display:grid;gap:6px;padding:12px 14px 12px 32px;list-style:disc;background:var(--bg);border:1px solid var(--line);border-radius:12px;font-size:15.5px}
+.clues li{padding-left:2px}
+.stmts{display:grid;gap:8px}
+.stmt{padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;font-size:16px}
+.stmt b{color:var(--pri);margin-right:6px}
+.stim{margin-top:16px}
+.cell{aspect-ratio:1;display:grid;place-items:center;background:#fff;border:2px solid var(--line);border-radius:12px;padding:8%}
+.cell svg{display:block;width:100%;height:100%}
+.cell.q{border:2px dashed var(--pri);background:var(--pri-t);color:var(--pri);font:700 28px/1 var(--serif);padding:0}
+.seq{display:flex;gap:4px}
+.seq .cell{flex:1 1 0;min-width:0;padding:4px;border-width:1.5px;border-radius:9px}
+.seq .cell.q{font-size:20px}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:280px;margin-left:auto;margin-right:auto}
+.grids{display:flex;gap:8px}
+.gbox{flex:1 1 0;min-width:0;background:#fff;border:2px solid var(--line);border-radius:12px;padding:4px}
+.gbox svg{display:block;width:100%;height:auto}
+.orig{display:flex;flex-direction:column;align-items:center;gap:6px}
+.orig .cell{width:116px;padding:12px}
+.orig small{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.nums{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.n{min-width:40px;padding:10px 9px;text-align:center;background:#fff;border:2px solid var(--line);border-radius:12px;font:700 21px/1.1 var(--sans);font-variant-numeric:tabular-nums}
+.n.q{border-style:dashed;border-color:var(--pri);background:var(--pri-t);color:var(--pri)}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opts-grid{grid-template-columns:1fr 1fr}
+.opts-list{grid-template-columns:1fr}
+.opt{position:relative;display:flex;align-items:center;gap:12px;min-height:58px;padding:12px 14px;background:#fff;border:2px solid var(--line);border-radius:14px;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .12s,background .12s}
+.opt.visual,.opt.num{justify-content:center}
+.opt.visual{min-height:108px;padding:10px}
+.opt.num{min-height:72px}
+.o-badge{flex:none;width:26px;height:26px;border-radius:50%;background:var(--bg);border:1.5px solid var(--line2);display:grid;place-items:center;font:700 13px/1 var(--sans);color:var(--ink2)}
+.opt.visual .o-badge,.opt.num .o-badge{position:absolute;top:8px;left:8px}
+.o-text{font-size:16px;line-height:1.35}
+.opt.num .o-text{font:700 24px/1 var(--sans);font-variant-numeric:tabular-nums}
+.o-vis svg{display:block;width:72px;height:72px}
+.opt.is-sel{border-color:var(--pri);background:var(--pri-t)}
+.opt.is-sel .o-badge{background:var(--pri);border-color:var(--pri);color:#fff}
+@media (hover:hover){.opt:hover{border-color:var(--ink2)}.opt.is-sel:hover{border-color:var(--pri)}}
+.opt:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+
+/* ---------- signup ---------- */
+.signup{display:grid;gap:18px;max-width:560px;margin:0 auto;padding-top:6px}
+.su-copy{display:grid;gap:14px}
+.su-copy h1{font:700 clamp(27px,7.4vw,40px)/1.1 var(--serif);letter-spacing:-.02em}
+.locked{display:flex;align-items:center;gap:16px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:18px}
+.ring{flex:none;width:96px;height:96px}
+.ring svg{display:block;width:100%;height:100%}
+.locked-t{display:flex;flex-direction:column;gap:3px}
+.locked-t b{font:700 16px/1.25 var(--sans)}
+.locked-t span{font-size:14px;color:var(--muted);line-height:1.35}
+.benefits{display:grid;gap:9px}
+.benefits li{display:flex;align-items:flex-start;gap:10px;font-size:15.5px;line-height:1.35}
+.benefits svg{flex:none;width:20px;height:20px;margin-top:1px;color:var(--good)}
+.su-form{display:grid;gap:14px;padding:20px 18px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);align-content:start}
+.field{display:grid;gap:6px}
+.field label{font:650 14px var(--sans)}
+.field input{width:100%;min-height:54px;padding:0 14px;background:#fff;border:2px solid var(--line2);border-radius:12px;font-size:16px;-webkit-appearance:none;appearance:none}
+.field input::placeholder{color:#8A8FA6}
+.field input:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 4px var(--pri-t)}
+.field.bad input{border-color:var(--bad);background:#FFF9F7}
+.pwrap{position:relative}
+.pwrap input{padding-right:70px}
+.pwtoggle{position:absolute;right:5px;top:5px;bottom:5px;min-width:56px;padding:0 12px;background:none;border:0;border-radius:8px;font:650 14px var(--sans);color:var(--pri);cursor:pointer;touch-action:manipulation}
+.err{font-size:13.5px;line-height:1.35;color:var(--bad);font-weight:550}
+.proto{font-size:12.5px;line-height:1.4;color:var(--muted);text-align:center}
+.su-back{justify-self:start}
+.su-form .btn{padding:0 12px;font-size:16.5px}
+
+/* ---------- results ---------- */
+.res{display:grid;gap:14px;max-width:640px;margin:0 auto;padding-top:6px}
+.res-hero{padding:22px 20px 18px;background:var(--ink);color:#fff;border-radius:22px;display:grid;gap:12px;box-shadow:var(--shadow)}
+.res-hero .eyebrow{background:rgba(255,255,255,.12);color:#fff;justify-self:start}
+.iq-row{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.iq{font:700 clamp(84px,24vw,116px)/.9 var(--serif);letter-spacing:-.04em}
+.iq-l{display:grid;gap:6px;padding-bottom:6px}
+.iq-l b{font:700 15px/1.2 var(--sans);letter-spacing:.02em;color:rgba(255,255,255,.92)}
+.chip{display:inline-block;justify-self:start;font:650 11.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.88)}
+.rank{font-size:18px;line-height:1.35}
+.rank b{font:700 30px/1 var(--serif);letter-spacing:-.01em;color:#fff}
+.bell{display:block;width:100%;height:auto;margin-top:2px}
+.res-perf{padding:20px 18px}
+.res-perf h2,.res-rev h2{font:700 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.big{display:flex;align-items:baseline;gap:8px;margin-top:10px}
+.big b{font:700 44px/1 var(--serif);letter-spacing:-.02em}
+.big span{font-size:16px;color:var(--ink2)}
+.bars{display:grid;gap:14px;margin-top:16px}
+.bar-top{display:flex;justify-content:space-between;font:600 14.5px var(--sans);margin-bottom:6px}
+.bar-top span:last-child{font-variant-numeric:tabular-nums;color:var(--ink2)}
+.track{height:10px;background:#ECE9DF;border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--pri);border-radius:99px;min-width:0}
+.rv-list{display:grid;gap:10px;margin-top:12px}
+.rv{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.rv summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 14px;cursor:pointer;touch-action:manipulation}
+.rv summary::-webkit-details-marker{display:none}
+.rv-ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.rv-ic svg{width:16px;height:16px}
+.rv.ok .rv-ic{background:var(--good-t);color:var(--good)}
+.rv.no .rv-ic{background:var(--bad-t);color:var(--bad)}
+.rv-t{flex:1;display:flex;flex-direction:column;line-height:1.25}
+.rv-t b{font-size:15px}
+.rv-t small{font-size:12.5px;color:var(--muted)}
+.rv-s{font:650 13px var(--sans)}
+.rv.ok .rv-s{color:var(--good)}
+.rv.no .rv-s{color:var(--bad)}
+.rv summary::after{content:"";flex:none;width:9px;height:9px;border-right:2.5px solid var(--ink2);border-bottom:2.5px solid var(--ink2);transform:rotate(45deg) translate(-2px,-2px);transition:transform .15s}
+.rv[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.rv-b{padding:2px 14px 16px;border-top:1px solid var(--line);display:grid;gap:12px}
+.rv-b .lead{margin-top:12px}
+.rv-b .stim{margin-top:0}
+.rv-b .matrix{max-width:230px}
+.rv-b .orig .cell{width:92px}
+.rv-b .n{font-size:18px;padding:8px 8px;min-width:36px}
+.rv-q{font:650 15px/1.35 var(--sans);margin-top:12px}
+.rv-ans{display:grid;gap:8px}
+.rv-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.rv-row.good{background:var(--good-t);border-color:#B7DEC9}
+.rv-row.bad{background:var(--bad-t);border-color:#F1C6BC}
+.rv-l{flex:none;width:92px;font:700 11.5px/1.2 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rv-val{display:flex;align-items:center;gap:10px;font-size:15.5px;line-height:1.3}
+.rv-badge{flex:none;width:24px;height:24px;border-radius:50%;background:#fff;border:1.5px solid var(--line2);display:grid;place-items:center;font:700 12px/1 var(--sans);color:var(--ink2)}
+.rv-vis svg{display:block;width:52px;height:52px}
+.rv-why{font-size:14.5px;line-height:1.5;color:var(--ink2)}
+.res-note{display:flex;gap:10px;padding:14px 16px;background:#fff;border:1px dashed var(--line2);border-radius:14px;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.res-note svg{flex:none;width:18px;height:18px;margin-top:1px}
+.res-actions{text-align:center}
+
+/* ---------- breakpoints ---------- */
+@media (max-width:359px){
+  .wrap{padding-left:16px;padding-right:16px}
+  .cta{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .n{min-width:34px;padding:9px 6px;font-size:18px}
+  .qcard{padding:16px 12px 14px}
+  .o-vis svg{width:64px;height:64px}
+  .opt.visual{min-height:98px}
+  .locked{gap:12px;padding:12px}
+  .ring{width:80px;height:80px}
+}
+@media (max-width:639px){
+  [data-screen="quiz"]:not([data-landing]) .top{display:none}
+}
+.back-sp{flex:none;width:0;height:44px;margin-right:-12px}
+.land-note{font-size:13.5px;line-height:1.4;color:var(--muted);margin:2px 0 4px}
+.land-note b{color:var(--ink);font-weight:700}
+@media (min-width:640px){
+  .wrap{padding-left:32px;padding-right:32px}
+  .cta{margin-left:0;margin-right:0;padding:0;background:none;position:static;margin-top:22px;flex-direction:row;align-items:center;flex-wrap:wrap;gap:16px}
+  .cta .btn{width:auto;min-width:290px}
+  .cta .fine{text-align:left}
+  .welcome{padding-top:0;justify-content:center}
+  .lede{font-size:18px}
+  .qcard{padding:26px 28px 24px}
+  .prompt{font-size:25px}
+  .tag{font-size:12px}
+  .matrix{max-width:320px}
+  .seq .cell{padding:10px;border-width:2px}
+  .seq .cell.q{font-size:30px}
+  .seq{gap:8px}
+  .orig .cell{width:140px}
+  .opts{gap:12px}
+  .opts-grid{grid-template-columns:repeat(4,1fr)}
+  .opts-grid.opts-pairs{grid-template-columns:1fr 1fr}
+  .o-vis svg{width:84px;height:84px}
+  .opt.visual{min-height:130px}
+  .signup{padding-top:16px}
+  .res-hero{padding:28px 28px 22px}
+}
+@media (min-width:900px){
+  .welcome{display:grid;grid-template-columns:1.12fr .88fr;grid-template-areas:"hero cats" "cta cats";column-gap:64px;align-content:center;justify-content:normal;min-height:calc(100vh - 56px - 28px);min-height:calc(100dvh - 56px - 28px);padding-top:0}
+  .hero{grid-area:hero;gap:20px;align-self:end}
+  .cta{grid-area:cta;margin-top:28px;align-self:start}
+  .cats{grid-area:cats;margin:0;align-self:center;display:flex;flex-direction:column;gap:12px;padding:28px;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+  .cats-h{display:block;font:700 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .cat{flex-direction:row;align-items:center;gap:16px;padding:16px;text-align:left;background:var(--bg);border-radius:16px}
+  .cat-ico{width:48px;height:48px;border-radius:14px}
+  .cat-ico svg{width:28px;height:28px}
+  .cat-t{gap:2px}
+  .cat-t b{font-size:17px}
+  .cat-t small{display:block;font-size:14px;color:var(--ink2);line-height:1.35}
+  .cat-t i{font-size:13px}
+  .lab-s{display:none}.lab-l{display:inline}
+  .signup{max-width:1000px;grid-template-columns:1fr 1fr;column-gap:56px;align-items:start;padding-top:36px}
+  .su-form{position:sticky;top:24px;padding:28px 26px}
+  .res{max-width:1000px;grid-template-columns:1.1fr .9fr;grid-template-areas:"hero perf" "rev rev" "note note" "act act";align-items:start;padding-top:20px}
+  .res-hero{grid-area:hero}
+  .res-perf{grid-area:perf}
+  .res-rev{grid-area:rev;max-width:640px;width:100%;justify-self:center}
+  .res-note{grid-area:note;max-width:640px;width:100%;justify-self:center}
+  .res-actions{grid-area:act}
+  .quiz{padding-top:8px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.matrix.combo .cell{padding:4%}
+.opt.combo{min-height:68px;padding:10px 52px 10px 14px}
+.opt.combo .o-badge{position:static}
+.opt.combo .o-vis{margin:0 auto}
+.opt.combo .o-vis svg{width:152px;height:38px}
+.rv-vis.combo svg{width:104px;height:26px}
+@media (min-width:640px){.opt.combo{min-height:84px}.opt.combo .o-vis svg{width:184px;height:46px}}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute"><defs><pattern id="iq-dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="1.9" fill="#0F1330"/></pattern></defs></svg>
+<div class="page" id="page" data-screen="welcome">
+  <header class="top"><div class="wrap top-in">
+    <span class="logo" aria-label="Patterna"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="9" fill="#2438F5"/><circle cx="15" cy="15" r="6.5" fill="none" stroke="#fff" stroke-width="3"/><path d="M19.6 19.6 L25 25" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><span class="wm">Patterna</span></span>
+  </div></header>
+  <main id="main" class="wrap" tabindex="-1"></main>
+</div>
+<div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
+<noscript><p style="padding:24px;font:16px sans-serif">The Patterna test needs JavaScript to run. Please enable it and reload.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+
+/* Build-time configuration (the only thing that differs between files). */
+var CONFIG = {"variant": "v3-partial-score-reveal", "questionIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "partialReveal": true, "duration": "~4–5 min"};
+
+/* =====================================================================
+   Tracking stub — pushes funnel events to window.dataLayer (no network).
+   ===================================================================== */
+function track(name, props){
+  var e = Object.assign({event:'patterna_'+name, variant:CONFIG.variant, ts:Date.now()}, props||{});
+  (window.dataLayer = window.dataLayer || []).push(e);
+  try{ console.debug('[patterna]', name, props||''); }catch(_){}
+}
+
+/* =====================================================================
+   Visual helpers (inline SVG, 64×64 viewBox unless noted)
+   ===================================================================== */
+var INK = '#0F1330';
+function svg(inner, vb){ return '<svg viewBox="'+(vb||'0 0 64 64')+'" aria-hidden="true" focusable="false">'+inner+'</svg>'; }
+function shape(kind, style){
+  var fill = style==='solid' ? INK : style==='dotted' ? 'url(#iq-dots)' : 'none';
+  var c = 'fill="'+fill+'" stroke="'+INK+'" stroke-width="3.5" stroke-linejoin="round"';
+  if(kind==='circle')   return '<circle cx="32" cy="32" r="21" '+c+'/>';
+  if(kind==='square')   return '<rect x="12" y="12" width="40" height="40" rx="3" '+c+'/>';
+  if(kind==='triangle') return '<polygon points="32,10 56,53 8,53" '+c+'/>';
+  return '<polygon points="32,7 57,32 32,57 7,32" '+c+'/>';
+}
+function arrow(deg){
+  return '<g transform="rotate('+deg+' 32 32)" fill="none" stroke="'+INK+'" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 52 V14"/><path d="M17 28 L32 13 L47 28"/></g>';
+}
+var SYM = {c:'circle', s:'square', t:'triangle', d:'diamond'};
+/* One fixed symbol order everywhere (circle, triangle, square, diamond) and every cell is ONE line,
+   so reading row 3 straight across (circle+square, then triangle+diamond) gives the answer's order.
+   Same shape size in every cell and option; `slots` just sets how much room the line gets. */
+function comboLine(str, slots, keepOrder){
+  var syms = keepOrder ? str.split('') : ['c','t','s','d'].filter(function(k){ return str.indexOf(k)>-1; });
+  var pitch = 36, W = slots*pitch, off = (W - syms.length*pitch)/2;
+  var inner = syms.map(function(k,i){
+    var cx = off + i*pitch + pitch/2;
+    return '<g transform="translate('+cx+' 18) scale('+(30/48)+') translate(-32 -32)">'+shape(SYM[k],'solid')+'</g>';
+  }).join('');
+  return svg(inner, '0 0 '+W+' 36');
+}
+function gridSvg(pos, filled){
+  var r = '';
+  for(var i=0;i<9;i++){
+    var x = 3+(i%3)*21, y = 3+Math.floor(i/3)*21;
+    r += '<rect x="'+x+'" y="'+y+'" width="18" height="18" rx="3" fill="#fff" stroke="#B9B5A8" stroke-width="1.5"/>';
+  }
+  var cx = 3+(pos%3)*21+9, cy = 3+Math.floor(pos/3)*21+9;
+  r += filled
+    ? '<circle cx="'+cx+'" cy="'+cy+'" r="5.8" fill="'+INK+'"/>'
+    : '<circle cx="'+cx+'" cy="'+cy+'" r="5" fill="none" stroke="'+INK+'" stroke-width="2.3"/>';
+  return svg(r, '0 0 66 66');
+}
+var SHAPE_D = 'M14 12 H46 V26 H68 V43 H38 V68 H14 Z';
+function shapeSvg84(transform){
+  return svg('<path d="'+SHAPE_D+'"'+(transform?' transform="'+transform+'"':'')+' fill="'+INK+'" stroke="'+INK+'" stroke-width="1.5" stroke-linejoin="round"/>', '0 0 84 84');
+}
+function cellOf(inner){ return '<div class="cell">'+svg(inner)+'</div>'; }
+function qCell(){ return '<div class="cell q" aria-hidden="true">?</div>'; }
+function matrix(cells, alt){
+  return '<div class="stim matrix" role="img" aria-label="'+alt+'">'+cells.map(function(c){ return c===null ? qCell() : cellOf(c); }).join('')+'</div>';
+}
+function nums(arr, alt){
+  return '<div class="stim nums" role="img" aria-label="'+alt+'">'+arr.map(function(n){ return '<span class="n">'+n+'</span>'; }).join('')+'<span class="n q" aria-hidden="true">?</span></div>';
+}
+
+/* =====================================================================
+   The 12 questions (fixed order, fixed answer positions)
+   ===================================================================== */
+var ALL = [
+ { id:1, cat:'visual', prompt:'Which shape comes next in the sequence?',
+   stim:'<div class="stim seq" role="img" aria-label="Sequence: solid circle, empty circle, solid circle, empty circle, solid circle, then a missing shape">'
+     + ['solid','empty','solid','empty','solid'].map(function(s){ return cellOf(shape('circle',s)); }).join('') + qCell() + '</div>',
+   optType:'visual', layout:'grid',
+   opts:[svg(shape('triangle','solid')), svg(shape('circle','empty')), svg(shape('circle','solid')), svg(shape('square','empty'))],
+   alts:['Solid triangle','Empty circle','Solid circle','Empty square'],
+   correct:1, why:'The circles alternate between filled and empty, so after a filled circle comes an empty one.' },
+
+ { id:2, cat:'numerical', prompt:'What number comes next?',
+   stim:nums([5,9,13,17],'Number sequence: 5, 9, 13, 17, then a missing number'),
+   optType:'num', layout:'grid', opts:['19','20','21','22'], correct:2,
+   why:'Each number is 4 more than the one before it: 17 + 4 = 21.' },
+
+ { id:3, cat:'logical', prompt:'Which statement must be true?',
+   lead:'<p class="stmt">All Nims are Tars.</p><p class="stmt">No Tars are Zels.</p>',
+   optType:'text', layout:'list',
+   opts:['All Tars are Nims.','Some Nims are Zels.','No Zels exist.','No Nims are Zels.'], correct:3,
+   why:'Every Nim is a Tar, and no Tar is a Zel — so no Nim can be a Zel.' },
+
+ { id:4, cat:'visual', prompt:'Which arrow completes the matrix?',
+   stim:matrix([arrow(0),arrow(90),arrow(180),arrow(90),arrow(180),arrow(270),arrow(180),arrow(270),null],
+     'Arrow matrix. Row 1: up, right, down. Row 2: right, down, left. Row 3: down, left, missing.'),
+   optType:'visual', layout:'grid',
+   opts:[svg(arrow(0)),svg(arrow(90)),svg(arrow(180)),svg(arrow(270))],
+   alts:['Arrow pointing up','Arrow pointing right','Arrow pointing down','Arrow pointing left'],
+   correct:0, why:'Each step across a row or down a column turns the arrow 90° clockwise, so the last cell points up.' },
+
+ { id:5, cat:'visual', prompt:'Which grid comes next in the sequence?',
+   stim:'<div class="stim grids" role="img" aria-label="Four 3 by 3 grids, each with one dot. Top-left, filled. Top-middle, hollow. Top-right, filled. Middle-right, hollow.">'
+     + [[0,true],[1,false],[2,true],[5,false]].map(function(g){ return '<div class="gbox">'+gridSvg(g[0],g[1])+'</div>'; }).join('') + '</div>',
+   optType:'visual', layout:'grid',
+   opts:[gridSvg(8,false),gridSvg(8,true),gridSvg(7,true),gridSvg(3,true)],
+   alts:['Hollow dot in the bottom-right cell','Filled dot in the bottom-right cell','Filled dot in the bottom-middle cell','Filled dot in the middle-left cell'],
+   correct:1, why:'The dot travels clockwise around the outer cells and alternates between filled and hollow. After the hollow dot at the middle-right comes a filled dot in the bottom-right corner.' },
+
+ { id:6, cat:'numerical', prompt:'What number comes next?',
+   stim:nums([2,5,11,23],'Number sequence: 2, 5, 11, 23, then a missing number'),
+   optType:'num', layout:'grid', opts:['35','45','46','47'], correct:3,
+   why:'Each number is double the one before it, plus 1: 23 × 2 + 1 = 47.' },
+
+ { id:7, cat:'logical', prompt:'Who finishes third?',
+   lead:'<p class="lead-p">Five runners — Lina, Theo, Omar, Maya, and Nia — finish a race with no ties.</p><ul class="clues"><li>Lina finishes last.</li><li>Theo finishes immediately before Omar.</li><li>Maya finishes after Omar but before Lina.</li><li>Nia finishes ahead of Theo.</li></ul>',
+   optType:'text', layout:'grid', gridPairs:true,
+   opts:['Nia','Maya','Omar','Theo'], correct:2,
+   why:'Lina is last. Theo is right before Omar, Maya comes between Omar and Lina, and Nia is ahead of Theo — so the order is Nia, Theo, Omar, Maya, Lina, and Omar is third.' },
+
+ { id:8, cat:'visual', prompt:'Which shape completes the matrix?',
+   stim:matrix([
+       shape('circle','solid'), shape('square','empty'), shape('triangle','dotted'),
+       shape('triangle','empty'), shape('circle','dotted'), shape('square','solid'),
+       shape('square','dotted'), shape('triangle','solid'), null
+     ], 'Shape matrix. Row 1: solid circle, empty square, dotted triangle. Row 2: empty triangle, dotted circle, solid square. Row 3: dotted square, solid triangle, missing.'),
+   optType:'visual', layout:'grid',
+   opts:[svg(shape('circle','solid')),svg(shape('triangle','empty')),svg(shape('circle','empty')),svg(shape('circle','dotted'))],
+   alts:['Solid circle','Empty triangle','Empty circle','Dotted circle'],
+   correct:2, why:'Each row and each column contains every shape and every interior style exactly once, so the missing cell is an empty circle.' },
+
+ { id:9, cat:'numerical', prompt:'What number comes next?',
+   stim:nums([3,8,15,24,35],'Number sequence: 3, 8, 15, 24, 35, then a missing number'),
+   optType:'num', layout:'grid', opts:['46','47','48','50'], correct:2,
+   why:'The gaps grow by 2 each time (+5, +7, +9, +11), so the next gap is +13: 35 + 13 = 48.' },
+
+ { id:10, cat:'visual', prompt:'Which image shows the original shape rotated 90° clockwise?',
+   stim:'<div class="stim orig" role="img" aria-label="The original shape: an asymmetric stepped silhouette"><div class="cell">'+shapeSvg84('')+'</div><small>Original</small></div>',
+   optType:'visual', layout:'grid',
+   opts:[shapeSvg84('rotate(-90 41 40)'),shapeSvg84('rotate(90 41 40)'),shapeSvg84('rotate(180 41 40)'),shapeSvg84('translate(0 80) scale(1 -1)')],
+   alts:['Shape option A','Shape option B','Shape option C','Shape option D'],
+   correct:1, why:'A quarter turn to the right (clockwise) gives option B. The counterclockwise turn, the upside-down version and the flipped shape all look different.' },
+
+ { id:11, cat:'logical', prompt:'Where is the coin?',
+   lead:'<p class="lead-p">A coin is hidden in one of three boxes. Exactly one statement is true.</p><div class="stmts"><p class="stmt"><b>Box A</b>“The coin is in Box B.”</p><p class="stmt"><b>Box B</b>“The coin is not in Box B.”</p><p class="stmt"><b>Box C</b>“The coin is not in Box A.”</p></div>',
+   optType:'text', layout:'grid', gridPairs:true,
+   opts:['Box A','Box B','Box C','Cannot be determined'], correct:0,
+   why:'If the coin is in Box A, only Box B’s statement is true. If it is in Box B or Box C, two statements are true — so the coin must be in Box A.' },
+
+ { id:12, cat:'visual', prompt:'Which option completes the matrix?',
+   stim:'<div class="stim matrix combo" role="img" aria-label="Symbol matrix. Row 1: circle, triangle, circle and triangle. Row 2: square, diamond, square and diamond. Row 3: circle and square, triangle and diamond, missing.">'
+     + ['c','t','ct','s','d','sd','cs','td'].map(function(s){ return '<div class="cell">'+comboLine(s,2)+'</div>'; }).join('') + qCell() + '</div>',
+   optType:'visual', optClass:'combo', layout:'list',
+   opts:[comboLine('cts',4),comboLine('std',4),comboLine('ctd',4),comboLine('ctsd',4)],
+   alts:['Circle, triangle, square','Triangle, square, diamond','Circle, triangle, diamond','Circle, triangle, square, diamond'],
+   correct:3, why:'Every row and column combines the symbols of its first two cells into the third, and the symbols always appear in the same order: circle, triangle, square, diamond. The last cell combines all four symbols, and only D has all four, so the answer is D.' }
+];
+
+var QS = CONFIG.questionIds.map(function(id){ return ALL.filter(function(q){ return q.id===id; })[0]; });
+var N = QS.length;
+var CAT_LABEL = {visual:'Visual reasoning', logical:'Logical reasoning', numerical:'Numerical reasoning'};
+
+/* =====================================================================
+   Scoring — deterministic, demonstration model only.
+   IQ estimate = 70 + 60 × (score / total)   → 0 correct = 70, all correct = 130
+   Percentile   = normal CDF (mean 100, SD 15), rounded, clamped 1–99.
+   ===================================================================== */
+function phi(z){
+  var t = 1/(1+0.2316419*Math.abs(z)), d = 0.3989423*Math.exp(-z*z/2);
+  var p = d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
+  return z>0 ? 1-p : p;
+}
+var TABLE = [];
+for(var s=0; s<=N; s++){
+  var iq = Math.round(70 + 60*s/N);
+  TABLE.push({iq:iq, pct:Math.min(99, Math.max(1, Math.round(100*phi((iq-100)/15))))});
+}
+function result(){
+  var cats = {visual:{c:0,t:0}, logical:{c:0,t:0}, numerical:{c:0,t:0}}, score = 0;
+  QS.forEach(function(q,i){
+    cats[q.cat].t++;
+    if(S.a[i]===q.correct){ cats[q.cat].c++; score++; }
+  });
+  return {score:score, cats:cats, iq:TABLE[score].iq, pct:TABLE[score].pct};
+}
+function countCats(){
+  var c = {visual:0, logical:0, numerical:0};
+  QS.forEach(function(q){ c[q.cat]++; });
+  return c;
+}
+
+/* =====================================================================
+   State (sessionStorage — no password or email is ever stored)
+   ===================================================================== */
+var KEY = 'patterna:'+CONFIG.variant;
+var HOME = CONFIG.skipWelcome ? 'quiz' : 'welcome'; /* Q1-on-landing variant has no welcome screen */
+function fresh(){ var a=[]; for(var i=0;i<N;i++) a.push(null); return {screen:HOME, q:0, a:a, reg:false, qs:false}; }
+function load(){
+  try{
+    var o = JSON.parse(sessionStorage.getItem(KEY));
+    if(o && Array.isArray(o.a) && o.a.length===N && typeof o.q==='number') return o;
+  }catch(_){}
+  return fresh();
+}
+function save(){ try{ sessionStorage.setItem(KEY, JSON.stringify(S)); }catch(_){} }
+var S = load();
+function allAnswered(){ return S.a.every(function(v){ return v!==null; }); }
+function firstUnanswered(){ for(var i=0;i<N;i++) if(S.a[i]===null) return i; return 0; }
+function sanitize(){
+  if(['welcome','quiz','signup','results'].indexOf(S.screen)<0) S.screen=HOME;
+  if(S.screen==='welcome' && CONFIG.skipWelcome) S.screen='quiz';
+  if(S.q<0 || S.q>=N) S.q=0;
+  if(S.screen==='quiz' && CONFIG.signupFirst && !S.reg) S.screen='signup';
+  if(S.screen==='signup' && !CONFIG.signupFirst && !allAnswered()){ S.screen='quiz'; S.q=firstUnanswered(); }
+  if(S.screen==='results'){
+    if(!allAnswered()){ S.screen='quiz'; S.q=firstUnanswered(); }
+    else if(!S.reg){ S.screen='signup'; }
+  }
+}
+
+/* =====================================================================
+   Icons
+   ===================================================================== */
+var ICO = {
+  check:'<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".14"/><path d="M5.8 10.4l2.8 2.8 5.6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  tick:'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  cross:'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  back:'<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12 4.5L6.5 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  clock:'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 4.6V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  list:'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 4.5h7M5.5 8h7M5.5 11.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="2.6" cy="4.5" r=".9" fill="currentColor"/><circle cx="2.6" cy="8" r=".9" fill="currentColor"/><circle cx="2.6" cy="11.5" r=".9" fill="currentColor"/></svg>',
+  nolimit:'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.8 12.2l8.4-8.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  info:'<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  cVisual:'<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect x="5" y="9" width="14" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="21" cy="19" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>',
+  cLogic:'<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="8" cy="16" r="3.2" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="24" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="24" cy="24" r="3.2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 14.6L21 9.4M11 17.4L21 22.6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  cNum:'<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M12.5 6L9.5 26M23 6l-3 20M5 12.5h22M4 20h22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>'
+};
+
+/* =====================================================================
+   Screens
+   ===================================================================== */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function welcomeHTML(){
+  var cnt = countCats();
+  var rows = [
+    ['visual','Visual','Visual reasoning','Patterns, shapes and matrices',ICO.cVisual],
+    ['logical','Logical','Logical reasoning','Deduction and ordering',ICO.cLogic],
+    ['numerical','Numerical','Numerical reasoning','Number sequences',ICO.cNum]
+  ];
+  var disclosure = CONFIG.signupFirst
+    ? 'Free account required to start · No credit card required'
+    : 'No signup to start · Free account required to see results';
+  return '<section class="welcome" aria-labelledby="h">'
+    + '<div class="hero" style="grid-area:hero">'
+    +   '<span class="eyebrow">Free cognitive assessment</span>'
+    +   '<h1 id="h">Discover How You Think.</h1>'
+    +   '<p class="lede">Answer '+N+' questions across visual, logical and numerical reasoning, then see your score and how you compare.</p>'
+    +   '<ul class="facts">'
+    +     '<li>'+ICO.list+N+' questions</li>'
+    +     '<li>'+ICO.clock+esc(CONFIG.duration)+'</li>'
+    +     '<li>'+ICO.nolimit+'No timer</li>'
+    +   '</ul>'
+    + '</div>'
+    + '<div class="cats" aria-label="What the test covers"><p class="cats-h">Three kinds of reasoning</p>'
+    +   rows.map(function(r){
+          return '<div class="cat"><span class="cat-ico">'+r[4]+'</span><span class="cat-t"><b><span class="lab-s">'+r[1]+'</span><span class="lab-l">'+r[2]+'</span></b><small>'+r[3]+'</small><i>'+cnt[r[0]]+' questions</i></span></div>';
+        }).join('')
+    + '</div>'
+    + '<div class="cta">'
+    +   '<button type="button" class="btn" data-action="start">Start Free IQ Test</button>'
+    +   '<p class="fine">'+disclosure+'</p>'
+    + '</div>'
+  + '</section>';
+}
+
+function optionHTML(q, i, sel){
+  var L = 'ABCD'.charAt(i);
+  var inner = q.optType==='visual' ? '<span class="o-vis">'+q.opts[i]+'</span>'
+            : '<span class="o-text">'+q.opts[i]+'</span>';
+  var label = q.alts ? ' aria-label="Option '+L+': '+q.alts[i]+'"' : '';
+  return '<button type="button" class="opt '+q.optType+(q.optClass?' '+q.optClass:'')+(sel?' is-sel':'')+'" data-opt="'+i+'" aria-pressed="'+(sel?'true':'false')+'"'+label+'>'
+       + '<span class="o-badge" aria-hidden="true">'+L+'</span>'+inner+'</button>';
+}
+
+function quizHTML(){
+  var q = QS[S.q], n = S.q+1;
+  var layoutCls = 'opts opts-'+q.layout + (q.gridPairs ? ' opts-pairs' : '');
+  var landing = CONFIG.skipWelcome && S.q===0;
+  return '<section class="quiz" aria-labelledby="h">'
+    + (landing ? '<p class="land-note"><b>Free cognitive assessment</b> · '+N+' questions · '+esc(CONFIG.duration)+' · no timer. A free account is needed to see your results.</p>' : '')
+    + '<div class="qhead">'
+    +   (landing ? '<span class="back-sp" aria-hidden="true"></span>' : '<button type="button" class="back" data-action="back" aria-label="'+(S.q===0?'Back to start':'Previous question')+'">'+ICO.back+'</button>')
+    +   '<div class="prog" role="progressbar" aria-label="Test progress" aria-valuemin="0" aria-valuemax="'+N+'" aria-valuenow="'+n+'" aria-valuetext="Question '+n+' of '+N+'"><span style="width:'+(n/N*100)+'%"></span></div>'
+    +   '<div class="count" aria-hidden="true"><b>'+n+'</b>/'+N+'</div>'
+    + '</div>'
+    + '<div class="qcard">'
+    +   '<span class="tag">'+CAT_LABEL[q.cat]+'</span>'
+    +   (q.lead ? '<div class="lead">'+q.lead+'</div>' : '')
+    +   '<h1 class="prompt" id="h">'+q.prompt+'</h1>'
+    +   (q.stim || '')
+    +   '<div class="'+layoutCls+'" role="group" aria-label="Answer options">'
+    +     q.opts.map(function(_,i){ return optionHTML(q, i, S.a[S.q]===i); }).join('')
+    +   '</div>'
+    + '</div>'
+  + '</section>';
+}
+
+function lockedRing(){
+  return '<div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">'
+    + '<circle cx="50" cy="50" r="43" fill="none" stroke="#C4C0B2" stroke-width="6" stroke-dasharray="1.5 7.5" stroke-linecap="round"/>'
+    + '<g transform="translate(40 24)" fill="none" stroke="#0F1330" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="9" width="17" height="12" rx="3" fill="#0F1330"/><path d="M5 9V6.5a5 5 0 0 1 10 0V9"/></g>'
+    + '<text x="50" y="68" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="700" fill="#0F1330">???</text>'
+    + '</svg></div>';
+}
+
+function scoreCard(r){
+  var C = 2*Math.PI*43, on = (r.score/N)*C;
+  return '<div class="locked reveal"><div class="ring"><svg viewBox="0 0 100 100" role="img" aria-label="Your score: '+r.score+' of '+N+' correct">'
+    + '<circle cx="50" cy="50" r="43" fill="none" stroke="#E4E1D6" stroke-width="9"/>'
+    + '<circle cx="50" cy="50" r="43" fill="none" stroke="#2438F5" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+on.toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(-90 50 50)"/>'
+    + '<text x="50" y="58" text-anchor="middle" font-family="Georgia,serif" font-size="27" font-weight="700" fill="#0F1330">'+r.score+'/'+N+'</text></svg></div>'
+    + '<div class="locked-t"><b>You answered '+r.score+' of '+N+' correctly</b>'
+    + '<span>Locked until you create your free account: IQ estimate, comparison and breakdown by question type.</span></div></div>';
+}
+function signupHTML(){
+  var pre = CONFIG.signupFirst;
+  var h, lede, lockedSub, cta, benefits = true;
+  if(pre){
+    h = 'Create your free account to start';
+    lede = 'Your results are revealed the moment you finish the test.';
+    lockedSub = 'Unlocks when you finish the test';
+    cta = 'Create Account &amp; Start Test';
+  } else {
+    h = 'You’ve completed the test!';
+    lede = 'Your results are ready. Create your free account to discover how you performed.';
+    lockedSub = 'Locked until you create your free account';
+    cta = 'Create Account &amp; Reveal Results';
+    if(CONFIG.signupCopy==='no-benefits') benefits = false; /* the ONLY change in variant 3 */
+  }
+  var rv = (!pre && CONFIG.partialReveal) ? result() : null;
+  if(rv) lede = 'Your score is in. Create your free account to unlock your IQ estimate, how you compare, and your full answer review.';
+  var list = benefits
+    ? '<ul class="benefits">'
+      + [rv ? 'Discover your IQ estimate and how you compare' : 'Discover your score and performance summary','Explore your results by question type','Review every answer with explanations'].map(function(t){ return '<li>'+ICO.check+'<span>'+t+'</span></li>'; }).join('')
+      + '</ul>'
+    : '';
+  return '<section class="signup" aria-labelledby="h">'
+    + '<div class="su-copy">'
+    +   (pre ? '<button type="button" class="link su-back" data-action="back-welcome">← Back</button>' : '')
+    +   '<h1 id="h">'+h+'</h1>'
+    +   '<p class="lede">'+lede+'</p>'
+    +   (rv ? scoreCard(rv) : '<div class="locked">'+lockedRing()+'<div class="locked-t"><b>Your IQ estimate</b><span>'+lockedSub+'</span></div></div>')
+    +   list
+    + '</div>'
+    + '<form class="su-form" novalidate aria-label="Create your free account">'
+    +   '<div class="field"><label for="su-email">Email</label>'
+    +     '<input id="su-email" name="email" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="you@example.com" aria-describedby="su-email-err">'
+    +     '<p class="err" id="su-email-err" role="alert" hidden></p></div>'
+    +   '<div class="field"><label for="su-pw">Password</label>'
+    +     '<div class="pwrap"><input id="su-pw" name="password" type="password" autocomplete="off" placeholder="At least 6 characters" aria-describedby="su-pw-err">'
+    +     '<button type="button" class="pwtoggle" data-action="toggle-pw" aria-label="Show password" aria-pressed="false">Show</button></div>'
+    +     '<p class="err" id="su-pw-err" role="alert" hidden></p></div>'
+    +   '<button type="submit" class="btn" data-action="submit-signup">'+cta+'</button>'
+    +   '<p class="fine">Free account · No credit card required</p>'
+    +   '<p class="proto">Prototype demo: no real account is created, and nothing you type is stored or sent. Scores are illustrative.</p>'
+    + '</form>'
+  + '</section>';
+}
+
+function bellSvg(iq){
+  var x0=12, x1=308, base=100, amp=74;
+  function X(v){ return x0+(v-55)/90*(x1-x0); }
+  function Y(v){ return base-amp*Math.exp(-Math.pow(v-100,2)/450); }
+  var line='', area='M'+X(55).toFixed(1)+' '+base+' ';
+  for(var v=55; v<=145; v++) line += (v===55?'M':'L')+X(v).toFixed(1)+' '+Y(v).toFixed(1)+' ';
+  for(var u=55; u<=iq; u++) area += 'L'+X(u).toFixed(1)+' '+Y(u).toFixed(1)+' ';
+  area += 'L'+X(iq).toFixed(1)+' '+base+' Z';
+  var mx = X(iq), my = Y(iq);
+  var lx = Math.max(34, Math.min(286, mx));
+  var ticks = [70,85,100,115,130].map(function(t){
+    return '<text x="'+X(t).toFixed(1)+'" y="117" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.62)" font-family="Arial,sans-serif">'+t+'</text>';
+  }).join('');
+  return '<svg class="bell" viewBox="0 0 320 124" role="img" aria-label="Bell curve of a simulated comparison group with your estimate of '+iq+' marked">'
+    + '<path d="'+area+'" fill="rgba(152,163,255,.38)"/>'
+    + '<path d="'+line+'" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"/>'
+    + '<line x1="12" y1="'+base+'" x2="308" y2="'+base+'" stroke="rgba(255,255,255,.28)" stroke-width="1"/>'
+    + '<line x1="'+mx.toFixed(1)+'" y1="'+my.toFixed(1)+'" x2="'+mx.toFixed(1)+'" y2="'+base+'" stroke="#fff" stroke-width="2" stroke-dasharray="3 3"/>'
+    + '<circle cx="'+mx.toFixed(1)+'" cy="'+my.toFixed(1)+'" r="6" fill="#fff" stroke="#98A3FF" stroke-width="3"/>'
+    + '<text x="'+lx.toFixed(1)+'" y="'+Math.max(12,my-14).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Arial,sans-serif">You</text>'
+    + ticks + '</svg>';
+}
+
+function ansHTML(q, i){
+  var L = 'ABCD'.charAt(i);
+  var body = q.optType==='visual' ? '<span class="rv-vis'+(q.optClass?' '+q.optClass:'')+'" role="img" aria-label="'+(q.alts?q.alts[i]:'Option '+L)+'">'+q.opts[i]+'</span>' : '<span>'+q.opts[i]+'</span>';
+  return '<span class="rv-val"><span class="rv-badge" aria-hidden="true">'+L+'</span>'+body+'</span>';
+}
+
+function reviewItem(q, i){
+  var mine = S.a[i], ok = mine===q.correct;
+  return '<details class="rv '+(ok?'ok':'no')+'">'
+    + '<summary><span class="rv-ic">'+(ok?ICO.tick:ICO.cross)+'</span>'
+    +   '<span class="rv-t"><b>Question '+(i+1)+'</b><small>'+CAT_LABEL[q.cat]+'</small></span>'
+    +   '<span class="rv-s">'+(ok?'Correct':'Incorrect')+'</span></summary>'
+    + '<div class="rv-b">'
+    +   (q.lead ? '<div class="lead">'+q.lead+'</div>' : '')
+    +   '<p class="rv-q">'+q.prompt+'</p>'
+    +   (q.stim || '')
+    +   '<div class="rv-ans">'
+    +     '<div class="rv-row '+(ok?'good':'bad')+'"><span class="rv-l">Your answer</span>'+(mine===null?'<span class="rv-val">No answer</span>':ansHTML(q,mine))+'</div>'
+    +     (ok ? '' : '<div class="rv-row good"><span class="rv-l">Correct answer</span>'+ansHTML(q,q.correct)+'</div>')
+    +   '</div>'
+    +   '<p class="rv-why">'+q.why+'</p>'
+    + '</div></details>';
+}
+
+function resultsHTML(){
+  var r = result();
+  var bars = ['visual','logical','numerical'].map(function(k){
+    var c = r.cats[k]; if(!c.t) return '';
+    return '<div><div class="bar-top"><span>'+CAT_LABEL[k]+'</span><span>'+c.c+'/'+c.t+'</span></div>'
+         + '<div class="track" role="img" aria-label="'+CAT_LABEL[k]+': '+c.c+' of '+c.t+' correct"><i style="width:'+(c.c/c.t*100)+'%"></i></div></div>';
+  }).join('');
+  return '<section class="res" aria-labelledby="h">'
+    + '<div class="res-hero">'
+    +   '<span class="eyebrow" aria-hidden="true">Your results</span>'
+    +   '<h1 id="h" class="sr">Your results</h1>'
+    +   '<div class="iq-row"><div class="iq" aria-label="IQ estimate '+r.iq+'">'+r.iq+'</div>'
+    +     '<div class="iq-l"><b>Your IQ estimate</b><span class="chip">Illustrative</span></div></div>'
+    +   '<p class="rank">In our simulated benchmark, your score ranks above <b>'+r.pct+'%</b> of reference scores.</p>'
+    +   '<span class="chip">Simulated comparison</span>'
+    +   bellSvg(r.iq)
+    + '</div>'
+    + '<div class="res-perf card">'
+    +   '<h2>Your performance</h2>'
+    +   '<p class="big"><b>'+r.score+'/'+N+'</b><span>correct</span></p>'
+    +   '<div class="bars">'+bars+'</div>'
+    + '</div>'
+    + '<div class="res-rev">'
+    +   '<button type="button" class="btn-o" data-action="review" aria-expanded="false" aria-controls="rv-list"><span>Review Your Answers</span><span class="chev" aria-hidden="true"></span></button>'
+    +   '<div class="rv-list" id="rv-list" hidden>'+QS.map(reviewItem).join('')+'</div>'
+    + '</div>'
+    + '<p class="res-note">'+ICO.info+'<span>Demonstration scoring: Patterna is not a standardized or clinically validated test. The IQ estimate is illustrative, and the benchmark is simulated: there is no real test-taker data behind it.</span></p>'
+    + '<div class="res-actions"><button type="button" class="link" data-action="restart">Start over</button></div>'
+  + '</section>';
+}
+
+/* =====================================================================
+   Rendering & navigation
+   ===================================================================== */
+var page = document.getElementById('page');
+var app  = document.getElementById('main');
+var live = document.getElementById('live');
+var timer = null, signupTracked = false;
+
+function render(initial){
+  page.setAttribute('data-screen', S.screen);
+  if(CONFIG.skipWelcome && S.screen==='quiz' && S.q===0) page.setAttribute('data-landing',''); else page.removeAttribute('data-landing');
+  var title = 'Patterna — Free IQ Test';
+  if(S.screen==='welcome') app.innerHTML = welcomeHTML();
+  else if(S.screen==='quiz'){ app.innerHTML = quizHTML(); title = 'Question '+(S.q+1)+' of '+N+' · Patterna'; live.textContent = 'Question '+(S.q+1)+' of '+N; }
+  else if(S.screen==='signup'){ app.innerHTML = signupHTML(); title = 'Create your free account · Patterna'; signupTracked = false; }
+  else { app.innerHTML = resultsHTML(); title = 'Your results · Patterna'; }
+  document.title = title;
+  window.scrollTo(0,0);
+  if(!initial){
+    var h = app.querySelector('h1');
+    if(h){ h.setAttribute('tabindex','-1'); try{ h.focus({preventScroll:true}); }catch(_){ h.focus(); } }
+  }
+}
+
+/* S.qs: quiz_start already fired for this attempt. Lives in sessionStorage with the rest of the attempt, reset only by fresh() on Start over. */
+function go(screen){
+  clearTimeout(timer);
+  S.screen = screen; save(); render();
+  if(screen==='signup') track('signup_view', CONFIG.partialReveal ? {score_shown:true} : undefined);
+  if(screen==='results'){ var r=result(); track('results_view',{score:r.score,total:N}); }
+  if(screen==='quiz'){
+    if(S.q===0 && !S.qs){ S.qs = true; save(); track('quiz_start'); }
+    track('question_view',{n:S.q+1});
+  }
+}
+
+function start(){
+  track('start_cta_click');
+  if(CONFIG.signupFirst && !S.reg){ go('signup'); return; }
+  S.q = 0; go('quiz');
+}
+function back(){
+  clearTimeout(timer);
+  if(S.q>0){ S.q--; save(); render(); track('question_view',{n:S.q+1,via:'back'}); }
+  else go(HOME);
+}
+function choose(i){
+  if(S.screen!=='quiz') return;
+  if(i>=app.querySelectorAll('.opt').length) return;
+  var at = S.q;
+  S.a[at] = i; save();
+  var btns = app.querySelectorAll('.opt');
+  for(var k=0;k<btns.length;k++){
+    var on = k===i;
+    btns[k].classList.toggle('is-sel', on);
+    btns[k].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  track('answer',{n:at+1,choice:'ABCD'.charAt(i)});
+  clearTimeout(timer);
+  timer = setTimeout(function(){ if(S.screen==='quiz' && S.q===at) next(); }, 400);
+}
+function next(){
+  if(S.q < N-1){ S.q++; save(); render(); track('question_view',{n:S.q+1}); }
+  else { track('quiz_complete'); go(S.reg ? 'results' : 'signup'); }
+}
+function afterSignup(){
+  if(allAnswered()) go('results');
+  else { S.q = firstUnanswered(); go('quiz'); }
+}
+
+/* ---- signup form ---- */
+function setErr(input, msg){
+  var p = document.getElementById(input.id+'-err');
+  p.textContent = msg; p.hidden = !msg;
+  input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  input.closest('.field').classList.toggle('bad', !!msg);
+}
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+function submitSignup(form){
+  var em = form.elements.email, pw = form.elements.password;
+  var okE = validEmail(em.value.trim()), okP = pw.value.length >= 6;
+  setErr(em, okE ? '' : 'Enter a valid email address, like name@example.com.');
+  setErr(pw, okP ? '' : 'Your password needs at least 6 characters.');
+  if(!okE || !okP){ track('signup_error',{email_ok:okE,password_ok:okP}); (okE ? pw : em).focus(); return; }
+  form.reset();                 // password is never kept
+  S.reg = true; save();
+  track('account_created');
+  afterSignup();
+}
+function togglePw(btn){
+  var input = document.getElementById('su-pw');
+  var show = input.type==='password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? 'Hide' : 'Show';
+  btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+}
+function toggleReview(btn){
+  var list = document.getElementById('rv-list');
+  var open = btn.getAttribute('aria-expanded')==='true';
+  btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+  list.hidden = open;
+  if(!open) track('review_open');
+}
+function restart(){
+  clearTimeout(timer);
+  try{ sessionStorage.removeItem(KEY); }catch(_){}
+  S = fresh(); go(HOME);
+}
+
+/* ---- events (delegated) ---- */
+app.addEventListener('click', function(e){
+  var t = e.target.closest('[data-action],[data-opt]');
+  if(!t || !app.contains(t)) return;
+  if(t.hasAttribute('data-opt')){ choose(+t.getAttribute('data-opt')); return; }
+  var a = t.getAttribute('data-action');
+  if(a==='start') start();
+  else if(a==='back') back();
+  else if(a==='back-welcome') go('welcome');
+  else if(a==='toggle-pw') togglePw(t);
+  else if(a==='review') toggleReview(t);
+  else if(a==='restart') restart();
+  else if(a==='submit-signup'){
+    /* Handled on click, NOT via native form submission: sandboxed previews (iframes without
+       allow-forms) silently block form submit, which made this button appear dead. */
+    e.preventDefault(); submitSignup(t.closest('form'));
+  }
+});
+/* Enter inside a field submits too — also independent of native form submission. */
+app.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && !e.isComposing && e.target.matches('.su-form input')){
+    e.preventDefault(); submitSignup(e.target.closest('form'));
+  }
+});
+/* Fallback if a browser does deliver a native submit event. */
+app.addEventListener('submit', function(e){
+  if(e.target.matches('form.su-form')){ e.preventDefault(); submitSignup(e.target); }
+});
+app.addEventListener('focusin', function(e){
+  if(e.target.matches('.su-form input') && !signupTracked){ signupTracked = true; track('signup_start'); }
+});
+app.addEventListener('input', function(e){
+  var el = e.target;
+  if(!el.matches('.su-form input')) return;
+  if(el.getAttribute('aria-invalid')==='true'){
+    var good = el.name==='email' ? validEmail(el.value.trim()) : el.value.length>=6;
+    if(good) setErr(el,'');
+  }
+});
+document.addEventListener('keydown', function(e){
+  if(S.screen!=='quiz' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.target.closest && e.target.closest('input,textarea')) return;
+  if(e.key>='1' && e.key<='4') choose(+e.key-1);
+});
+
+/* ---- init ---- */
+sanitize(); save(); render(true);
+if(S.screen==='welcome') track('landing_view');
+else if(CONFIG.skipWelcome && S.screen==='quiz' && S.q===0 && !S.qs){ track('landing_view'); S.qs=true; save(); track('quiz_start'); track('question_view',{n:1}); }
+else if(S.screen==='signup') track('signup_view');
+else if(S.screen==='results'){ var r0=result(); track('results_view',{score:r0.score,total:N}); }
+else if(S.screen==='quiz') track('question_view',{n:S.q+1,via:'restore'});
+
+})();
+</script>
+</body>
+</html>

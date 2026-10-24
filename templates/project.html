@@ -95,6 +95,21 @@
   .car-nav button[disabled] { opacity: 0.3; cursor: default; }
   .car-count { font-size: 0.85rem; color: color-mix(in srgb, var(--paper) 65%, transparent); font-variant-numeric: tabular-nums; }
 
+  /* phone demo: a playable page in a phone frame, rest of the payoff beside it */
+  .demo { display: grid; gap: 2.2rem; }
+  @media (min-width: 900px) { .demo { grid-template-columns: 380px minmax(0, 1fr); gap: 3.2rem; align-items: start; } }
+  .phone-frame { margin: 0 auto; width: min(100%, 380px); }
+  .phone { padding: 11px; border-radius: 46px; background: #34322d; box-shadow: inset 0 0 0 1px rgba(246,246,243,0.16), 0 24px 60px rgba(0,0,0,0.35); }
+  .phone iframe { display: block; width: 100%; aspect-ratio: 9 / 19; border: 0; border-radius: 36px; background: #fff; }
+  .phone-frame figcaption { text-align: center; font-size: 0.78rem; color: color-mix(in srgb, var(--paper) 60%, transparent); padding-top: 0.7rem; }
+  .demo-side .hero-media { margin-top: 0; }
+  .demo-side .cta-row { margin-top: 1.6rem; }
+  .more-links { list-style: none; margin: 1.2rem 0 0; padding: 0; flex-basis: 100%; font-size: 0.9rem; }
+  .more-links li { padding: 0.5rem 0; border-top: 1px solid color-mix(in srgb, var(--paper) 18%, transparent); color: color-mix(in srgb, var(--paper) 62%, transparent); }
+  .more-links li:last-child { border-bottom: 1px solid color-mix(in srgb, var(--paper) 18%, transparent); }
+  .more-links a { color: var(--paper); font-weight: 600; text-decoration: none; }
+  .more-links a:hover { text-decoration: underline; }
+
   /* a tile built in HTML (e.g. an end card): fills whatever cell shape it lands in */
   .tile-html { flex: 1 1 auto; min-height: 15rem; display: flex; container-type: inline-size; }
   .tile-html > * { flex: 1; }

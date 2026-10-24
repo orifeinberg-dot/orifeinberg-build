@@ -117,9 +117,14 @@ function renderProject(slug, data, sections, template, report) {
   const firstMedia = pb.findIndex((b) => b.type === 'images');
   const intro = pb.filter((b, i) => b.type === 'p' && (firstMedia === -1 || i < firstMedia)).map((b) => inline(b.text)).join(' ');
   const caption = pb.filter((b, i) => b.type === 'p' && firstMedia !== -1 && i > firstMedia).map((b) => `<p>${inline(b.text)}</p>`).join('');
-  const media = pb.filter((b) => b.type === 'images').flatMap((b) => b.items);
-  const ctas = pb.filter((b) => b.type === 'ul').flatMap((b) => b.items);
-  if (!media.length) report('error', 'visual payoff has no image, GIF or video');
+  const allMedia = pb.filter((b) => b.type === 'images').flatMap((b) => b.items);
+  const isPhone = (m) => /\bphone\b/.test(m.title) && /\.html?$/i.test(m.src);
+  const phones = allMedia.filter(isPhone);
+  const media = allMedia.filter((m) => !isPhone(m));
+  const linkLists = pb.filter((b) => b.type === 'ul').map((b) => b.items);
+  const ctas = linkLists[0] || [];      // first list → buttons
+  const moreLinks = linkLists.slice(1).flat(); // any further lists → small text links
+  if (!allMedia.length) report('error', 'visual payoff has no image, GIF, video or playable demo');
   if (!intro) report('warn', 'visual payoff has no setup line above it');
 
   const mediaTag = (m, eager) => {
@@ -131,8 +136,10 @@ function renderProject(slug, data, sections, template, report) {
     if (/\.(mp4|webm)$/i.test(m.src)) return `<video src="${esc(m.src)}" autoplay muted loop playsinline aria-label="${esc(m.alt)}"></video>`;
     return `<img src="${esc(m.src)}" alt="${esc(m.alt)}"${eager ? '' : ' loading="lazy"'} decoding="async">`;
   };
-  let payoffHtml;
-  if (media.length === 1) {
+  let payoffHtml = '';
+  if (media.length === 0) {
+    payoffHtml = '';
+  } else if (media.length === 1) {
     payoffHtml = `<figure class="hero-media">${mediaTag(media[0], true)}${media[0].alt ? `<figcaption>${esc(media[0].alt)}</figcaption>` : ''}</figure>`;
   } else if ((data.layout || '').toLowerCase() === 'carousel') {
     // a swipeable row (slides, carousels): scroll-snap track + prev/next + counter; click to enlarge
@@ -165,9 +172,28 @@ ${media.map((m) => `    <figure class="frame"><button type="button">${mediaTag(m
     const [, txt, href] = m;
     checkLocal(href);
     if (/^https?:/i.test(href)) external.push(href);
-    const dl = /\.(pdf|zip)$/i.test(href) ? ' download' : /^https?:|\.html?$/i.test(href) ? ' target="_blank" rel="noopener"' : '';
+    const dl = /\.(pdf|zip)$/i.test(href) ? ' download' : /^https?:|\.(html?|png|jpe?g|webp|gif)$/i.test(href) ? ' target="_blank" rel="noopener"' : '';
     return `<a class="cta ${i === 0 ? 'primary' : 'ghost'}" href="${esc(href)}"${dl}>${inline(txt)}</a>`;
   }).join('\n');
+  const moreLinksHtml = moreLinks.length ? `<ul class="more-links">${moreLinks.map((item) => {
+    const m = item.match(/^\[([^\]]+)\]\(([^)\s]+)\)(.*)$/);
+    if (!m) return `<li>${inline(item)}</li>`;
+    const [, txt, href, rest] = m; checkLocal(href); if (/^https?:/i.test(href)) external.push(href);
+    const tgt = /^https?:|\.(html?|png|jpe?g|webp|gif)$/i.test(href) ? ' target="_blank" rel="noopener"' : '';
+    return `<li><a href="${esc(href)}"${tgt}>${inline(txt)}</a>${inline(rest)}</li>`;
+  }).join('')}</ul>` : '';
+
+  // phone demo: a playable page in a phone frame, with the rest of the payoff in a column beside it
+  let captionOut = caption, ctasOut = ctaHtml + moreLinksHtml;
+  if (phones.length) {
+    const ph = phones[0];
+    checkLocal(ph.src);
+    payoffHtml = `<div class="demo">
+  <figure class="phone-frame"><div class="phone"><iframe src="${esc(ph.src)}" title="${esc(ph.alt)}" loading="lazy"></iframe></div><figcaption>${esc(ph.alt)}</figcaption></figure>
+  <div class="demo-side">${payoffHtml}<div class="payoff-caption">${caption}</div><div class="cta-row">${ctaHtml}</div>${moreLinksHtml}</div>
+</div>`;
+    captionOut = ''; ctasOut = '';
+  }
 
   // 4. How it works
   const steps = parseBlocks(sec['how it works']).filter((b) => b.type === 'ol').flatMap((b) => b.items);
@@ -196,12 +222,12 @@ ${media.map((m) => `    <figure class="frame"><button type="button">${mediaTag(m
   for (const [k, v] of Object.entries(data)) if (PLACEHOLDER.test(v)) report('error', `placeholder text left in "${k}:"`);
   [...new Set(external)].forEach((u) => report('ok', `external link (check it's public): ${u}`));
 
-  const firstImg = media.find((m) => !/\.(mp4|webm)$/i.test(m.src));
+  const firstImg = media.find((m) => !/\.(mp4|webm|html?)$/i.test(m.src));
   if (data.share_image) checkLocal(data.share_image);
   const vars = {
     TITLE: esc(data.title), HEADING: inline(data.heading || data.title), SUMMARY: esc(data.summary), HOOK: inline(hookText),
-    PAYOFF_CAPTION: caption, STEPS_INTRO: stepsIntro, STACK_NOTE: data.stack_note ? `<p class="stack-note">${inline(data.stack_note)}</p>` : '',
-    INSIGHT: insightHtml, PAYOFF_INTRO: intro, PAYOFF: payoffHtml, CTAS: ctaHtml,
+    PAYOFF_CAPTION: captionOut, STEPS_INTRO: stepsIntro, STACK_NOTE: data.stack_note ? `<p class="stack-note">${inline(data.stack_note)}</p>` : '',
+    INSIGHT: insightHtml, PAYOFF_INTRO: intro, PAYOFF: payoffHtml, CTAS: ctasOut,
     STEPS: stepsHtml, LEARNED: learnedHtml,
     STACK: stack.map((t) => `<li>${esc(t)}</li>`).join(''), CODE: codeHtml,
     URL: `${SITE_URL}/projects/${slug}/`,
