@@ -1,7 +1,7 @@
 ---
 title: Reverse-engineering a competitor's best Facebook ad
 heading: Reverse-Engineering a Competitor's Best Facebook Ad — With No Performance Data
-summary: A tool that finds a rival's top-performing Facebook ad with zero performance data, then rebuilds it as a finished creative brief and storyboard for another brand.
+summary: A tool that finds a competitor's top-performing Facebook ad with zero performance data, then rebuilds it as a finished creative brief and storyboard for another brand.
 tags: Python, AI vision, Claude Code
 stack: Python, Claude (AI vision + copywriting), Apify (ad scraping), OpenAI (image generation)
 stack_note: Built end-to-end by directing Claude Code.

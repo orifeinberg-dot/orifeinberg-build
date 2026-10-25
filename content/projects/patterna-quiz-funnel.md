@@ -1,6 +1,6 @@
 ---
 title: Patterna: from ad click to free account
-summary: A clickable quiz funnel, three A/B tests and three ads for a brand-new IQ test, built in 48 hours. How do you get a stranger to sign up before they see their score?
+summary: A clickable quiz funnel, three A/B tests and three ads for a brand-new IQ test, built in one day. How do you get a stranger to sign up before they see their score?
 tags: Claude, HTML/JS, A/B testing
 stack: Claude, Plain HTML/CSS/JavaScript, Inline SVG, Playwright (testing)
 code: none
