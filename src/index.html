@@ -20,7 +20,7 @@
     --ink-soft:   #57554E;
     --ink-faint:  #8B897F;
     --line:       #D7D6CE;
-    --accent:     #223089;   /* ultramarine — used ONLY for the audio guide + result metrics */
+    --accent:     #223089;   /* ultramarine — used ONLY for the AI assistant + result metrics */
     --accent-ink: #1A2568;
 
     /* --- Type --- */
@@ -142,7 +142,7 @@
     .statement span, .hero-eyebrow, .guide { opacity: 1; transform: none; animation: none; }
   }
 
-  /* ---------- Audio guide (the voice agent) ---------- */
+  /* ---------- AI assistant (the voice agent) ---------- */
   .guide {
     margin-top: clamp(2.5rem, 6vw, 4rem);
     display: flex;
@@ -187,7 +187,7 @@
   .guide-note { margin-top: 1rem; font-size: 0.92rem; color: var(--ink-soft); max-width: 34ch; }
   .guide-note.is-error { color: var(--accent); }
 
-  /* live concierge status line */
+  /* live assistant status line */
   .guide-status {
     display: flex;
     align-items: center;
@@ -206,7 +206,7 @@
   .guide-status .wave i:nth-child(2) { animation-delay: .12s; }
   .guide-status .wave i:nth-child(3) { animation-delay: .24s; }
   .guide-status .wave i:nth-child(4) { animation-delay: .36s; }
-  /* accent + livelier bars while the concierge is speaking */
+  /* accent + livelier bars while the assistant is speaking */
   .guide-status[data-mode="speaking"] .wave i { background: var(--accent); }
   @keyframes eq { 0%,100% { height: 4px; } 50% { height: 15px; } }
   @media (prefers-reduced-motion: reduce) {
@@ -563,16 +563,16 @@
       </h1>
 
       <!--
-        Custom inline concierge — driven by the ElevenLabs SDK in the page script
+        Custom inline AI assistant — driven by the ElevenLabs SDK in the page script
         below (no floating widget). The button starts/stops the conversation and
         the status line reflects live state. Agent config: voice-agent/agent-setup.md
       -->
       <div class="guide">
         <button class="guide-btn" id="guideBtn" data-state="idle" type="button">
           <span class="dot" aria-hidden="true"></span>
-          <span class="guide-btn-label">Take the audio guide</span>
+          <span class="guide-btn-label">Talk to my AI assistant</span>
         </button>
-        <p class="guide-note" id="guideNote">It's my voice, cloned. Ask the concierge anything about the work — it'll tell you what it doesn't know.</p>
+        <p class="guide-note" id="guideNote">A voice assistant that answers questions about my work. It'll tell you when it doesn't know something.</p>
         <div class="guide-status" id="guideStatus" aria-live="polite" hidden>
           <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="guide-status-text" id="guideStatusText">Connecting…</span>
@@ -636,26 +636,24 @@
       <article class="work-item" data-date="2026-09-17">
         <div class="label">
           <div class="cat">cat. 01</div>
-          <h3>A concierge that speaks in my voice</h3>
-          <p class="medium">ElevenLabs voice agent, n8n lead capture</p>
-          <span class="result"><small>Live proof</small>You're using it right now.</span>
+          <h3>An AI assistant you can talk to</h3>
+          <p class="medium">ElevenLabs voice agent</p>
+          <span class="result"><small>Live proof</small>Try it at the top of the page.</span>
         </div>
         <div class="work-body">
-          <p>The audio guide on this page is the case study. It's a transparent AI concierge —
-            my cloned voice, but it introduces itself as an assistant, never pretends to be me.
-            It answers recruiters' and clients' questions from a grounded knowledge base, and
-            when it doesn't know something it says so and points to the contact links rather
-            than improvising.</p>
-          <p><strong>Why it matters:</strong> the thing I'm selling — voice, agents, and n8n
-            automation — is demonstrated by the medium you're hearing it through.</p>
+          <p>The voice assistant at the top of this page is the case study. It answers
+            recruiters' and clients' questions from a knowledge base I wrote. It says plainly
+            when it doesn't know something, points to the contact links instead of guessing,
+            and never pretends to be me.</p>
+          <p><strong>Why it matters:</strong> it shows the kind of voice agent I build for
+            clients — short, honest answers, limited to what it actually knows.</p>
           <details class="detail">
             <summary><span class="chev">›</span> How it's built</summary>
             <div class="detail-body">
-              Instant Voice Cloning on ElevenLabs, running on the low-latency Flash model for
-              real conversation. The agent is grounded in a curated Q&amp;A knowledge base and
-              hard-instructed not to speculate about my experience. Every conversation can hand
-              a lead to an n8n flow that logs to a CRM and offers to book a call — the same
-              autonomous loop I build for clients.
+              Built on ElevenLabs Agents, set to speak a little slower and in plain English
+              for visitors who aren't native speakers. It answers only
+              from a written knowledge base, is told never to guess about my experience, and
+              each call is capped at five minutes to keep costs under control.
             </div>
           </details>
         </div>
@@ -717,7 +715,7 @@
         </div>
         <div class="cap">
           <h3>AI agents &amp; voice</h3>
-          <p>Voice and chat agents, like the concierge on this page, that answer only from what
+          <p>Voice and chat agents, like the assistant on this page, that answer only from what
             they know — with cost limits and an honest "I don't know" built in.</p>
         </div>
         <div class="cap">
@@ -787,7 +785,7 @@
           <li><a href="#" data-placeholder><span>LinkedIn</span><span class="kind">profile →</span></a></li>
           <li><a href="mailto:hello@example.com" data-placeholder><span>Email</span><span class="kind">hello@ — add address →</span></a></li>
           <li><a href="#" data-placeholder><span>Book a call</span><span class="kind">Cal.com / Calendly →</span></a></li>
-          <li><a href="#top"><span>Or ask the concierge to take a message</span><span class="kind">audio guide →</span></a></li>
+          <li><a href="#top"><span>Or ask my AI assistant a question</span><span class="kind">voice →</span></a></li>
         </ul>
       </div>
     </div>
@@ -853,7 +851,7 @@
 
 <script type="module">
   /* ============================================================
-     VOICE CONCIERGE — custom inline UI on the ElevenLabs SDK.
+     VOICE AI ASSISTANT — custom inline UI on the ElevenLabs SDK.
      The hero button starts/stops the conversation; the status line
      shows live state. No floating widget. Agent config lives in
      voice-agent/agent-setup.md. To change the agent, edit AGENT_ID.
@@ -925,14 +923,14 @@
     conversation = null;
     sessionPromise = null;
     setState('idle');
-    setLabel('Take the audio guide');
+    setLabel('Talk to my AI assistant');
     if (btn) btn.disabled = false;
     hideStatus();
   }
 
   async function start() {
     if (busy || conversation) return;
-    if (!Conversation) { showError('The concierge could not load. Please refresh and try again.'); return; }
+    if (!Conversation) { showError('The assistant couldn’t load. Please refresh and try again.'); return; }
     busy = true;
     setState('connecting');
     setLabel('Connecting…');
@@ -955,7 +953,7 @@
         onDisconnect: function () { resetControls(); restoreNote(); },
         onError: function (err) {
           resetControls();
-          showError('The concierge ran into a problem. Please try again.');
+          showError('The assistant ran into a problem. Please try again.');
         },
         onModeChange: function (m) {
           bumpIdle();
@@ -969,7 +967,7 @@
       busy = false;
       if (btn) btn.disabled = false;
       setState('idle');
-      setLabel('Take the audio guide');
+      setLabel('Talk to my AI assistant');
       const name = (e && e.name) || '';
       const text = String((e && e.message) || e || '');
       if (name === 'NotAllowedError' || /permission|denied|not.?allowed/i.test(text)) {
@@ -977,7 +975,7 @@
       } else if (name === 'NotFoundError' || /no.*(microphone|audio|device)/i.test(text)) {
         showError('No microphone found. Connect one and tap again.');
       } else {
-        showError('Couldn’t start the concierge. Please try again.');
+        showError('Couldn’t start the assistant. Please try again.');
       }
     }
   }
@@ -996,10 +994,10 @@
       const ender = c.endSession || c.end || c.stop || c.disconnect || c.close;
       if (typeof ender === 'function') {
         try { await ender.call(c); }
-        catch (e) { endError = e; console.error('[concierge] end failed:', e); }
+        catch (e) { endError = e; console.error('[assistant] end failed:', e); }
       } else {
         endError = new Error('no end method on session');
-        console.error('[concierge] session has no end method:', Object.keys(c || {}));
+        console.error('[assistant] session has no end method:', Object.keys(c || {}));
       }
     }
 
