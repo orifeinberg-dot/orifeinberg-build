@@ -604,6 +604,9 @@
   .lead-form button:disabled { opacity: 0.6; cursor: default; }
   .form-status { margin: 0; font-size: 0.92rem; color: var(--ink-soft); min-height: 1.4em; }
   .form-status.is-error { color: var(--accent); }
+  .lead-form .fix-link { justify-self: auto; display: inline; background: none; color: var(--accent); padding: 0;
+    font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  .lead-form .fix-link:hover { background: none; color: var(--accent-ink); }
   .form-note { margin: -0.4rem 0 0; font-size: 0.8rem; color: var(--ink-faint); }
   .contact-lead {
     font-family: var(--sans-wide);
@@ -979,11 +982,50 @@
       status.textContent = msg;
       status.classList.toggle('is-error', !!isError);
     }
+    // Typo help: "dana@gmial.com" → offer "dana@gmail.com" before sending.
+    const COMMON = ['gmail.com', 'googlemail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'live.com', 'msn.com',
+      'icloud.com', 'me.com', 'aol.com', 'protonmail.com', 'proton.me', 'gmx.com', 'gmx.de', 'mail.com', 'yandex.com',
+      'walla.co.il', 'walla.com'];
+    const BAD_ENDINGS = { cmo: 'com', con: 'com', ocm: 'com', vom: 'com', xom: 'com', comm: 'com', coom: 'com', cm: 'com', om: 'com' };
+    function distance(a, b) {
+      const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+      for (let j = 1; j <= b.length; j++) d[0][j] = j;
+      for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      return d[a.length][b.length];
+    }
+    function suggest(email) {
+      const at = email.lastIndexOf('@'); if (at < 1) return '';
+      const user = email.slice(0, at), dom = email.slice(at + 1).toLowerCase();
+      if (COMMON.includes(dom)) return '';
+      let best = '', bestD = 3;
+      for (const c of COMMON) { const dd = distance(dom, c); if (dd < bestD) { bestD = dd; best = c; } }
+      if (best && bestD <= 2) return user + '@' + best;
+      const parts = dom.split('.'), end = parts[parts.length - 1];
+      if (parts.length > 1 && BAD_ENDINGS[end]) { parts[parts.length - 1] = BAD_ENDINGS[end]; return user + '@' + parts.join('.'); }
+      return '';
+    }
+    let offered = '';
+    status.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-fix]'); if (!b) return;
+      form.elements.email.value = b.getAttribute('data-fix');
+      offered = ''; say('Fixed — press Send.');
+    });
+
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       const email = form.elements.email.value.trim();
       if (!form.elements.name.value.trim()) { say('Please add your name.', true); form.elements.name.focus(); return; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say('Please add a valid email.', true); form.elements.email.focus(); return; }
+      const fix = suggest(email);
+      if (fix && offered !== email) {
+        offered = email; // pressing Send again keeps what they typed
+        status.classList.remove('is-error');
+        status.textContent = 'Did you mean ';
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'fix-link'; b.setAttribute('data-fix', fix); b.textContent = fix;
+        status.appendChild(b); status.appendChild(document.createTextNode('? Click to fix it, or press Send again to keep yours.'));
+        return;
+      }
       if (!LEAD_ENDPOINT) { say('The form isn’t connected yet. Please use the links on the right.', true); return; }
       const data = new URLSearchParams(new FormData(form));
       data.set('source', 'Website form');
@@ -991,7 +1033,11 @@
       say('Sending…');
       try {
         const res = await fetch(LEAD_ENDPOINT, { method: 'POST', body: data });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) {
+          const r = await res.json().catch(() => null);
+          if (r && r.error) { say(r.error, true); form.elements.email.focus(); return; }
+          throw new Error('HTTP ' + res.status);
+        }
         form.reset();
         if (window.gtag) gtag('event', 'generate_lead', { form: 'contact' });
         say('Thanks — got it. I’ll get back to you soon.');
