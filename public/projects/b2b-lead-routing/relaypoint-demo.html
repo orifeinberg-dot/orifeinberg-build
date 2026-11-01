@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relaypoint lead routing — demo (fictional brand)</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --bg:#F3F4F1; --surface:#FFFFFF; --ink:#12201C; --ink2:#43524D; --muted:#66746F;
+  --line:#D9DED9; --pri:#0F6B5C; --pri-d:#0B5348; --pri-t:#E2F1EE;
+  --a:#0F6B5C; --a-t:#E2F1EE; --b:#9A6A00; --b-t:#FBF1DA; --c:#6B6F7A; --c-t:#ECEDF0;
+  --bad:#B3321B;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:440px;margin:0 auto;padding:22px 18px 28px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.logo{display:inline-flex;align-items:center;gap:8px;font:800 19px/1 var(--sans);letter-spacing:-.02em}
+.logo svg{flex:none}
+.tag{font:700 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:5px 8px;border-radius:999px}
+h1{font:750 22px/1.2 var(--sans);letter-spacing:-.015em;margin:0 0 6px}
+.sub{margin:0 0 18px;color:var(--ink2);font-size:14px}
+label{display:block;font:600 13px/1.3 var(--sans);color:var(--ink2);margin:0 0 6px}
+.field{margin-bottom:14px}
+input,select,textarea{width:100%;font:16px/1.3 var(--sans);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;outline:none}
+textarea{resize:none;height:72px}
+input:focus,select:focus,textarea:focus{border-color:var(--pri)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border:0;border-radius:13px;background:var(--pri);color:#fff;font:650 16px/1 var(--sans);cursor:pointer;touch-action:manipulation}
+.btn:hover{background:var(--pri-d)}
+.btn:disabled{opacity:.6;cursor:default}
+.btn:focus-visible,.link:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.err{color:var(--bad);font-size:13.5px;min-height:1.2em;margin:8px 0 0}
+.fine{font-size:12px;line-height:1.4;color:var(--muted);margin:14px 0 0;text-align:center}
+.try{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 14px}
+.try button{font:600 12.5px/1 var(--sans);color:var(--ink2);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 10px;cursor:pointer}
+.try button:hover{border-color:var(--pri);color:var(--pri)}
+
+/* progress */
+.steps{list-style:none;margin:6px 0 0;padding:0}
+.steps li{display:flex;gap:10px;align-items:center;padding:11px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14.5px}
+.steps li:first-child{border-top:0}
+.steps i{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none}
+.steps li.on{color:var(--ink)} .steps li.on i{border-color:var(--pri);border-top-color:transparent;animation:spin .8s linear infinite}
+.steps li.done{color:var(--ink)} .steps li.done i{background:var(--pri);border-color:var(--pri)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.steps li.on i{animation:none}}
+
+/* result */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.co{font:750 18px/1.2 var(--sans);margin:0}
+.dom{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+.what{margin:0;color:var(--ink2);font-size:14px}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.facts span{font-size:12px;color:var(--ink2);background:var(--bg);border-radius:999px;padding:5px 9px}
+.scorebox{display:flex;align-items:center;gap:14px}
+.score{font:800 40px/1 var(--sans);letter-spacing:-.03em}
+.score small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0}
+.tier{font:800 13px/1 var(--sans);border-radius:8px;padding:7px 9px}
+.t-A{background:var(--a-t);color:var(--a)} .t-B{background:var(--b-t);color:var(--b)} .t-C{background:var(--c-t);color:var(--c)}
+.stage{font:650 14.5px/1.3 var(--sans);margin:12px 0 2px}
+.route{margin:0;color:var(--ink2);font-size:14px}
+h2{font:700 12px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 9px}
+.reasons{margin:0;padding-left:18px;font-size:14px}
+.reasons li{margin:3px 0}
+.reply{white-space:pre-wrap;font-size:14px;margin:0;color:var(--ink)}
+.meta{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted);margin:4px 2px 14px}
+.warn{font-size:12.5px;color:var(--b);margin:8px 0 0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#E6E9E5;border-radius:12px;padding:4px;margin:0 0 18px}
+.modes button{border:0;background:none;border-radius:9px;padding:9px 6px;font:650 13px/1.2 var(--sans);color:var(--ink2);cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(18,32,28,.12)}
+.modes button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.top.plain{display:none}
+.own{margin:2px 0 16px;border:1.5px dashed var(--line);border-radius:12px;padding:11px 13px;background:var(--surface)}
+.own summary{cursor:pointer;font:650 14px/1.3 var(--sans);color:var(--pri);list-style:none}
+.own summary::-webkit-details-marker{display:none}
+.own summary:before{content:"+ ";font-weight:800}
+.own[open] summary:before{content:"– "}
+.own p{margin:8px 0 8px;font-size:12.5px;color:var(--muted)}
+.own textarea{height:88px}
+.against{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.link{display:block;margin:6px auto 0;background:none;border:0;color:var(--ink2);font:600 14px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="modes" role="group" aria-label="Demo mode">
+    <button type="button" id="mRelay" aria-pressed="true">Example: Relaypoint</button>
+    <button type="button" id="mOwn" aria-pressed="false">Your own ideal customer</button>
+  </div>
+  <div class="top" id="top">
+    <span class="logo" aria-label="Relaypoint">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="7" fill="#0F6B5C"/><path d="M7 16.5V7.5h5.2a3 3 0 0 1 0 6H9.6M12.4 13.5l4.1 3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Relaypoint
+    </span>
+    <span class="tag">Fictional brand</span>
+  </div>
+
+  <!-- 1. form -->
+  <form id="form" novalidate>
+    <h1 id="fTitle">Talk to our team</h1>
+    <p class="sub" id="fSub">Type any company website. You'll see how the lead would be scored and routed — in seconds.</p>
+    <div class="field" id="icpField" hidden>
+      <label for="icp">Who do you sell to?</label>
+      <textarea id="icp" name="icp" maxlength="400" placeholder="e.g. Fintech companies in Europe with 50–500 employees and their own compliance team"></textarea>
+    </div>
+    <div class="field">
+      <label for="website" id="lWebsite">Company website</label>
+      <input id="website" name="website" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="yourcompany.com" maxlength="200" required>
+    </div>
+    <div class="try" aria-label="Or try an example">
+      <button type="button" data-site="stripe.com">stripe.com</button>
+      <button type="button" data-site="intercom.com">intercom.com</button>
+      <button type="button" data-site="ikea.com">ikea.com</button>
+    </div>
+    <div class="field">
+      <label for="role" id="lRole">Your role</label>
+      <select id="role" name="role">
+        <option>Founder / CEO</option>
+        <option>Marketing</option>
+        <option>Sales</option>
+        <option selected>Customer success</option>
+        <option>Operations</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="need"><span id="lNeed">What do you need?</span> <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <textarea id="need" name="need" maxlength="300" placeholder="e.g. new customers take too long to get started"></textarea>
+    </div>
+    <div class="hp" aria-hidden="true"><label>Nickname <input name="nickname" type="text" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn" id="go" type="submit">Score this lead</button>
+    <p class="err" id="err" role="alert"></p>
+    <p class="fine">Only the company website and your answers are used. Please don't type personal details. <span id="fineRelay">Relaypoint is fictional. </span>Example companies are real but not connected to <span id="fineRelay2">Relaypoint or </span>Ori.</p>
+  </form>
+
+  <!-- 2. progress -->
+  <section id="progress" hidden aria-live="polite">
+    <h1>Routing the lead…</h1>
+    <ol class="steps">
+      <li id="s1"><i></i>Reading the company website</li>
+      <li id="s2"><i></i>Scoring against the ideal customer</li>
+      <li id="s3"><i></i>Saving to HubSpot and routing</li>
+    </ol>
+  </section>
+
+  <!-- 3. result -->
+  <section id="result" hidden aria-live="polite">
+    <div class="card">
+      <p class="co" id="rCo"></p>
+      <p class="dom" id="rDom"></p>
+      <p class="what" id="rWhat"></p>
+      <div class="facts" id="rFacts"></div>
+      <p class="warn" id="rWarn" hidden></p>
+    </div>
+    <div class="card">
+      <div class="scorebox">
+        <div class="score" id="rScore"></div>
+        <span class="tier" id="rTier"></span>
+      </div>
+      <p class="stage" id="rStage"></p>
+      <p class="route" id="rRoute"></p>
+      <p class="against" id="rAgainst"></p>
+    </div>
+    <div class="card">
+      <h2>Why</h2>
+      <ul class="reasons" id="rReasons"></ul>
+    </div>
+    <div class="card" id="rReplyCard" hidden>
+      <h2>Drafted first reply (not sent)</h2>
+      <p class="reply" id="rReply"></p>
+    </div>
+    <div class="meta"><span id="rTime"></span><span id="rSaved"></span></div>
+    <button class="btn" id="again" type="button">Try another company</button>
+  </section>
+</div>
+
+<script>
+(function () {
+  var ENDPOINT = 'https://orifeinberg.app.n8n.cloud/webhook/b2b-lead-demo';
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $('form'), progress = $('progress'), result = $('result');
+  var timers = [];
+
+  function show(el) { [form, progress, result].forEach(function (x) { x.hidden = x !== el; }); window.scrollTo(0, 0); }
+  function step(n) {
+    ['s1', 's2', 's3'].forEach(function (id, i) {
+      $(id).className = i < n ? 'done' : i === n ? 'on' : '';
+    });
+  }
+  function clean(v) {
+    return String(v || '').trim().toLowerCase().replace(/^[a-z]+:\/\//, '').replace(/^www\./, '').split(/[\/?#:\s]/)[0];
+  }
+  function text(id, v) { $(id).textContent = v; }
+
+  var own = false;
+  var COPY = {
+    relay: { title: 'Talk to our team', sub: "Type any company website. You'll see how the lead would be scored and routed — in seconds.",
+             website: 'Company website', role: 'Your role', need: 'What do you need?', needPh: 'e.g. new customers take too long to get started' },
+    own:   { title: 'Score a lead for your business', sub: "Describe who you sell to, then add a prospect. You'll see how that lead would be scored and routed.",
+             website: "Prospect's website", role: "Prospect's role", need: 'What does the prospect need?', needPh: 'e.g. faster compliance checks' }
+  };
+  function setMode(isOwn) {
+    own = isOwn;
+    var c = own ? COPY.own : COPY.relay;
+    $('mRelay').setAttribute('aria-pressed', String(!own));
+    $('mOwn').setAttribute('aria-pressed', String(own));
+    $('top').classList.toggle('plain', own);
+    $('icpField').hidden = !own;
+    $('fineRelay').hidden = own; $('fineRelay2').hidden = own;
+    text('fTitle', c.title); text('fSub', c.sub);
+    text('lWebsite', c.website); text('lRole', c.role); text('lNeed', c.need);
+    $('need').placeholder = c.needPh;
+    $('err').textContent = '';
+    show(form);
+    if (own) $('icp').focus();
+  }
+  ['icp', 'website'].forEach(function (id) { $(id).addEventListener('input', function () { $('err').textContent = ''; }); });
+  $('mRelay').addEventListener('click', function () { setMode(false); });
+  $('mOwn').addEventListener('click', function () { setMode(true); });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.try button'), function (b) {
+    b.addEventListener('click', function () { $('website').value = b.getAttribute('data-site'); $('err').textContent = ''; });
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var site = clean($('website').value);
+    if (!/^([a-z0-9-]+\.)+[a-z]{2,24}$/.test(site)) {
+      $('err').textContent = 'Please enter a company website, like acme.com.';
+      $('website').focus();
+      return;
+    }
+    if (own && $('icp').value.trim().length < 15) {
+      $('err').textContent = 'Please describe who you sell to in a few words.';
+      $('icp').focus();
+      return;
+    }
+    $('err').textContent = '';
+    $('go').disabled = true;
+    show(progress); step(0);
+    timers = [setTimeout(function () { step(1); }, 2200), setTimeout(function () { step(2); }, 6500)];
+
+    var data = new URLSearchParams(new FormData(form));
+    data.set('website', site);
+    if (!own) data.delete('icp');
+    try {
+      var res = await fetch(ENDPOINT, { method: 'POST', body: data });
+      var r = await res.json().catch(function () { return null; });
+      timers.forEach(clearTimeout);
+      if (!r || !r.ok) throw new Error((r && r.error) || 'Something went wrong.');
+      step(3);
+      render(r);
+      setTimeout(function () { show(result); }, 350);
+    } catch (err) {
+      timers.forEach(clearTimeout);
+      show(form);
+      $('err').textContent = (err && err.message && err.message !== 'Failed to fetch')
+        ? err.message : 'The demo couldn’t connect. Please try again in a minute.';
+    } finally {
+      $('go').disabled = false;
+    }
+  });
+
+  function render(r) {
+    text('rCo', r.company || r.domain);
+    text('rDom', r.domain);
+    text('rWhat', r.whatTheyDo || '');
+    var facts = $('rFacts'); facts.innerHTML = '';
+    var sells = { businesses: 'Sells to businesses', consumers: 'Sells to consumers', both: 'Sells to businesses and consumers' }[r.sellsTo];
+    var size = { small: 'Small company', 'mid-size': 'Mid-size company', large: 'Large company' }[r.size];
+    [sells, size].forEach(function (f) { if (f) { var s = document.createElement('span'); s.textContent = f; facts.appendChild(s); } });
+    var basis = r.basis || (r.siteRead ? 'website' : 'none');
+    $('rWarn').hidden = basis === 'website';
+    $('rWarn').textContent = basis === 'public'
+      ? "This website couldn't be read automatically, so the score is based on what's publicly known about the company."
+      : "Couldn't read this website and the company isn't widely known, so the score is cautious.";
+
+    $('rScore').innerHTML = '';
+    $('rScore').appendChild(document.createTextNode(String(r.score)));
+    var sm = document.createElement('small'); sm.textContent = ' / 100'; $('rScore').appendChild(sm);
+    var t = $('rTier'); t.textContent = 'Tier ' + r.tier; t.className = 'tier t-' + r.tier;
+    text('rStage', r.stageLabel);
+    text('rRoute', r.route);
+    text('rAgainst', 'Scored against ' + (r.scoredAgainst || "Relaypoint's ideal customer") + '.');
+
+    var ul = $('rReasons'); ul.innerHTML = '';
+    (r.reasons || []).forEach(function (x) { var li = document.createElement('li'); li.textContent = x; ul.appendChild(li); });
+
+    $('rReplyCard').hidden = !r.replyDraft;
+    text('rReply', r.replyDraft || '');
+    text('rTime', 'Scored in ' + r.seconds + ' s');
+    text('rSaved', r.savedToHubspot ? 'Saved to HubSpot ✓' : 'Not saved to HubSpot');
+  }
+
+  $('again').addEventListener('click', function () {
+    $('website').value = ''; $('need').value = '';  // keep their ideal customer for the next try
+    show(form); $('website').focus();
+  });
+})();
+</script>
+</body>
+</html>
