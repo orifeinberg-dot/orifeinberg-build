@@ -15,6 +15,7 @@ import path from 'node:path';
 
 const ROOT = path.dirname(new URL(import.meta.url).pathname);
 const SITE_URL = 'https://build.orifeinberg.com';
+const GA_ID = 'G-HZ74CSMD3M'; // GA4 — added to the homepage and project pages only (never to the demo files in public/)
 const DIST = path.join(ROOT, 'dist');
 const SECTIONS = ['hook', 'insight', 'visual payoff', 'how it works', 'what i learned'];
 const PLACEHOLDER = /\b(TODO|TBD|lorem ipsum)\b|\[your /i;
@@ -248,6 +249,68 @@ ${media.map((m) => `    <figure class="frame"><button type="button">${mediaTag(m
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? vars[k] : ''));
 }
 
+// ---------- analytics (GA4 + consent banner) ----------
+// GA4 starts in Google's Consent Mode with analytics cookies OFF. Cookies are only used after the
+// visitor clicks "Accept" in the banner; the choice is remembered in this browser.
+const ANALYTICS_HEAD = `<!-- GA4 with Consent Mode: no analytics cookies until the visitor accepts -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  var __consent = null; try { __consent = localStorage.getItem('analytics-consent'); } catch (e) {}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: __consent === 'granted' ? 'granted' : 'denied' });
+  gtag('js', new Date());
+  gtag('config', '${GA_ID}');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+`;
+const ANALYTICS_BODY = `<!-- cookie banner + click tracking -->
+<style>
+  .cookie-bar { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 50; max-width: 560px; margin: 0 auto;
+    background: #1B1A17; color: #F6F6F3; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+    font: 500 0.88rem/1.4 "Archivo", system-ui, sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .cookie-bar[hidden] { display: none; }
+  .cookie-bar p { margin: 0; flex: 1 1 260px; }
+  .cookie-bar button { font: 600 0.88rem/1 "Archivo", system-ui, sans-serif; padding: 9px 14px; cursor: pointer; border: 1px solid #F6F6F3; }
+  .cookie-bar .ok { background: #F6F6F3; color: #1B1A17; }
+  .cookie-bar .no { background: transparent; color: #F6F6F3; }
+  .cookie-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+</style>
+<div class="cookie-bar" id="cookieBar" role="region" aria-label="Cookie choice" hidden>
+  <p>This site uses Google Analytics cookies to see which pages are useful. Is that OK?</p>
+  <button type="button" class="ok" data-consent="granted">Accept</button>
+  <button type="button" class="no" data-consent="denied">Decline</button>
+</div>
+<script>
+  (function () {
+    var bar = document.getElementById('cookieBar');
+    var saved = null; try { saved = localStorage.getItem('analytics-consent'); } catch (e) {}
+    if (!saved) bar.hidden = false;
+    document.addEventListener('click', function (e) {
+      var choice = e.target.closest('[data-consent]');
+      if (choice) {
+        var v = choice.getAttribute('data-consent');
+        try { localStorage.setItem('analytics-consent', v); } catch (err) {}
+        gtag('consent', 'update', { analytics_storage: v });
+        bar.hidden = true;
+        return;
+      }
+      if (e.target.closest('[data-consent-open]')) { bar.hidden = false; return; }
+      // key clicks → GA4 events
+      var el = e.target.closest('a, button'); if (!el) return;
+      var href = el.getAttribute('href') || '';
+      if (el.id === 'guideBtn') gtag('event', 'assistant_click');
+      else if (/linkedin\\.com/.test(href)) gtag('event', 'contact_click', { method: 'linkedin' });
+      else if (el.id === 'emailLink') gtag('event', 'contact_click', { method: 'email' });
+      else if (el.matches('.read-more, .card-title')) gtag('event', 'case_study_open', { project: href.replace(/^.*projects\\/|\\/$/g, '') });
+      else if (el.matches('.cta')) gtag('event', 'case_study_cta', { label: el.textContent.trim().slice(0, 60) });
+      else if (el.matches('.code-link')) gtag('event', 'code_click', { link: href });
+    });
+  })();
+</script>
+`;
+const addAnalytics = (html) => html.replace('</head>', ANALYTICS_HEAD + '</head>').replace('</body>', ANALYTICS_BODY + '</body>');
+
 // ---------- main ----------
 console.log('Building build.orifeinberg.com\n');
 fs.rmSync(DIST, { recursive: true, force: true });
@@ -288,7 +351,7 @@ for (const file of files) {
   if (errorCount > before) continue;
 
   fs.mkdirSync(path.join(DIST, 'projects', slug), { recursive: true });
-  fs.writeFileSync(path.join(DIST, 'projects', slug, 'index.html'), html);
+  fs.writeFileSync(path.join(DIST, 'projects', slug, 'index.html'), addAnalytics(html));
   published.push({ slug, ...data });
 }
 
@@ -330,7 +393,7 @@ else {
   cards.forEach((c, n) => { c.html = c.html.replace(/<div class="cat">cat\. \d+<\/div>/, `<div class="cat">cat. ${String(n + 1).padStart(2, '0')}</div>`); });
   const out = cards.reverse().map((c) => c.html).join('\n\n      '); // newest first
   home = home.slice(0, a) + '\n      ' + out + '\n      ' + home.slice(b);
-  fs.writeFileSync(homePath, home);
+  fs.writeFileSync(homePath, addAnalytics(home));
 }
 
 // sitemap.xml + llms.txt — generated from what's actually published, so drafts never leak
