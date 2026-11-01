@@ -1,0 +1,24 @@
+# Ori Feinberg
+
+> Ori Feinberg is a senior user-acquisition and performance marketer based in Tel Aviv, Israel, with 8+ years of hands-on campaign management. He now builds marketing tools himself with AI: automation, AI agents, tracking and test funnels. This site is his portfolio of case studies.
+
+## Summary
+
+- Runs paid acquisition hands-on on Google (Search, Shopping, Performance Max, YouTube, Display), Meta and Bing, optimizing for CPA, CAC and ROAS.
+- Has worked across very different funnels: eCommerce in 12 European markets, a US subscription app (Web2App), affiliate lead generation, automotive tech, and agency work for consumer brands.
+- Has taken two paid-acquisition accounts in-house from agencies, rebuilt them and scaled them.
+- Builds conversion tracking and attribution from scratch in GA4 and Google Tag Manager.
+- Builds marketing automation and AI tools with n8n, Python, Claude Code and the Claude API.
+- Headline results: cut CPA by about 55% at 20% month-over-month new-user growth (US health app); owned a ~$400K monthly media budget across 12 European markets; scaled a ~£1M/month UK and Ireland search account to a top-three market position.
+- Open to roles across user acquisition, AI marketing engineering, AI building, marketing analytics and conversion-rate optimization (CRO), full-time or freelance.
+- Education: B.A. in Computer Science, Interdisciplinary Center (IDC) Herzliya.
+
+## Case studies
+
+{{PROJECTS}}
+- [AI voice assistant](https://build.orifeinberg.com/#top): The voice assistant on the homepage answers questions about Ori's work from a written knowledge base, says when it doesn't know something, and never pretends to be him. Built on ElevenLabs Agents.
+
+## Contact
+
+- [Contact form](https://build.orifeinberg.com/#contact): the best way to reach Ori; he replies to every message himself.
+- [LinkedIn](https://www.linkedin.com/in/orifeinberg/)
