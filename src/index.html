@@ -488,6 +488,7 @@
   .lead-form button:disabled { opacity: 0.6; cursor: default; }
   .form-status { margin: 0; font-size: 0.92rem; color: var(--ink-soft); min-height: 1.4em; }
   .form-status.is-error { color: var(--accent); }
+  .form-note { margin: -0.4rem 0 0; font-size: 0.8rem; color: var(--ink-faint); }
   .contact-lead {
     font-family: var(--sans-wide);
     font-weight: 700;
@@ -779,12 +780,13 @@
             <div class="hp" aria-hidden="true"><label>Website <input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
             <button type="submit" id="leadBtn">Send</button>
             <p class="form-status" id="leadStatus" aria-live="polite"></p>
+            <p class="form-note">I'll only use your details to reply to you. They're kept in my CRM and never shared.</p>
           </form>
         </div>
         <ul class="links">
-          <li><a href="#" data-placeholder><span>LinkedIn</span><span class="kind">profile →</span></a></li>
-          <li><a href="mailto:hello@example.com" data-placeholder><span>Email</span><span class="kind">hello@ — add address →</span></a></li>
-          <li><a href="#" data-placeholder><span>Book a call</span><span class="kind">Cal.com / Calendly →</span></a></li>
+          <li><a href="https://www.linkedin.com/in/orifeinberg/" target="_blank" rel="noopener"><span>LinkedIn</span><span class="kind">linkedin.com/in/orifeinberg →</span></a></li>
+          <!-- Email is put together by the script below, so simple spam bots that read the page source don't find it. -->
+          <li><a id="emailLink" href="#contact" data-u="ori" data-d="orifeinberg.com"><span>Email</span><span class="kind" id="emailText">ori [at] orifeinberg.com →</span></a></li>
           <li><a href="#top"><span>Or ask my AI assistant a question</span><span class="kind">voice →</span></a></li>
         </ul>
       </div>
@@ -801,12 +803,14 @@
 </footer>
 
 <script>
-  // Keep placeholder links from jumping anywhere until real URLs are added.
-  document.querySelectorAll('a[data-placeholder]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      if (a.getAttribute('href') === '#') e.preventDefault();
-    });
-  });
+  // Build the email link in the browser (keeps the address out of the raw page source).
+  (function () {
+    var a = document.getElementById('emailLink');
+    if (!a) return;
+    var addr = a.getAttribute('data-u') + '@' + a.getAttribute('data-d');
+    a.href = 'mailto:' + addr;
+    document.getElementById('emailText').textContent = addr + ' →';
+  })();
 </script>
 
 <script>
