@@ -233,6 +233,18 @@ ${media.map((m) => `    <figure class="frame"><button type="button">${mediaTag(m
     URL: `${SITE_URL}/projects/${slug}/`,
     OG_IMAGE: data.share_image ? `${SITE_URL}/projects/${slug}/${data.share_image}` : firstImg ? `${SITE_URL}/projects/${slug}/${firstImg.src}` : '',
   };
+  // structured data (schema.org CreativeWork) — helps search and AI answer engines understand the page
+  const ld = {
+    '@context': 'https://schema.org', '@type': 'CreativeWork',
+    '@id': `${vars.URL}#work`, url: vars.URL,
+    name: data.title, headline: data.heading || data.title, description: data.summary,
+    datePublished: data.date, inLanguage: 'en', keywords: list(data.tags).join(', '),
+    author: { '@type': 'Person', '@id': `${SITE_URL}/#ori`, name: 'Ori Feinberg', url: `${SITE_URL}/` },
+    isPartOf: { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: `${SITE_URL}/` },
+  };
+  if (vars.OG_IMAGE) ld.image = vars.OG_IMAGE;
+  if (data.code && /^https?:/i.test(data.code)) ld.sameAs = data.code;
+  vars.JSONLD = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`;
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? vars[k] : ''));
 }
 
@@ -319,6 +331,22 @@ else {
   const out = cards.reverse().map((c) => c.html).join('\n\n      '); // newest first
   home = home.slice(0, a) + '\n      ' + out + '\n      ' + home.slice(b);
   fs.writeFileSync(homePath, home);
+}
+
+// sitemap.xml + llms.txt — generated from what's actually published, so drafts never leak
+const today = new Date().toISOString().slice(0, 10);
+const urls = [{ loc: `${SITE_URL}/`, lastmod: today }]
+  .concat([...published].sort((x, y) => (x.date < y.date ? 1 : -1)).map((p) => ({ loc: `${SITE_URL}/projects/${p.slug}/`, lastmod: p.date })));
+fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`).join('\n')}
+</urlset>
+`);
+const llmsPath = path.join(DIST, 'llms.txt');
+if (fs.existsSync(llmsPath)) {
+  const projects = [...published].sort((x, y) => (x.date < y.date ? 1 : -1))
+    .map((p) => `- [${p.title}](${SITE_URL}/projects/${p.slug}/): ${p.summary}`).join('\n');
+  fs.writeFileSync(llmsPath, fs.readFileSync(llmsPath, 'utf8').replace('{{PROJECTS}}', projects));
 }
 
 console.log(`\n${published.length} project page(s) published. ${errorCount ? `${errorCount} error(s) — build failed, the live site is unchanged.` : 'No errors.'}`);
