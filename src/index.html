@@ -947,7 +947,7 @@
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Ori Feinberg</span>
+    <span>© 2026 Ori Feinberg · <button type="button" class="cookie-link" data-consent-open>Cookie settings</button></span>
     <span>Built in code on Vercel · voice by ElevenLabs · automation by n8n</span>
   </div>
 </footer>
@@ -993,6 +993,7 @@
         const res = await fetch(LEAD_ENDPOINT, { method: 'POST', body: data });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         form.reset();
+        if (window.gtag) gtag('event', 'generate_lead', { form: 'contact' });
         say('Thanks — got it. I’ll get back to you soon.');
       } catch (err) {
         say('Something went wrong. Please try again, or use the links on the right.', true);
