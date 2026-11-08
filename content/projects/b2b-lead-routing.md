@@ -7,7 +7,7 @@ stack: n8n, Claude API, HubSpot CRM, Plain HTML/JavaScript
 stack_note: Workflow, scoring rules and demo built by directing Claude Code.
 code: none
 date: 2026-11-01
-share_image: relaypoint-flow.png
+share_image: relaypoint-share.png
 draft: false
 ---
 
