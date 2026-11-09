@@ -218,8 +218,34 @@
     transition: color .18s, border-color .18s;
   }
   .nav a:hover { color: var(--ink); border-color: var(--ink); }
+  /* phone menu: a "Menu" button opens the full list of sections */
+  .menu-btn { display: none; }
   @media (max-width: 620px) {
-    .nav a:not(.nav-primary) { display: none; }
+    .masthead .wrap { align-items: center; }
+    .menu-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      appearance: none; background: none; border: 1px solid var(--line); cursor: pointer;
+      font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--ink);
+      padding: 0.5rem 0.8rem; min-height: 40px;
+    }
+    .menu-btn .bars { width: 16px; height: 10px; position: relative; }
+    .menu-btn .bars::before, .menu-btn .bars::after {
+      content: ""; position: absolute; left: 0; right: 0; height: 2px; background: currentColor; transition: transform .2s, top .2s;
+    }
+    .menu-btn .bars::before { top: 1px; }
+    .menu-btn .bars::after { top: 7px; }
+    .menu-btn[aria-expanded="true"] .bars::before { top: 4px; transform: rotate(45deg); }
+    .menu-btn[aria-expanded="true"] .bars::after { top: 4px; transform: rotate(-45deg); }
+    .nav {
+      display: none; position: absolute; left: 0; right: 0; top: 100%;
+      flex-direction: column; gap: 0;
+      background: var(--paper); border-bottom: 1px solid var(--line);
+      padding: 0.4rem var(--gutter, 1.25rem) 1rem; font-size: 1.05rem;
+    }
+    .nav.is-open { display: flex; }
+    .nav a { padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+    .nav a:last-child { border-bottom: 0; }
+    .nav a:hover { border-color: var(--line); }
   }
 
   /* ---------- Hero ---------- */
@@ -661,9 +687,10 @@
 <header class="masthead">
   <div class="wrap">
     <a href="#top" class="mark">Ori Feinberg</a>
-    <nav class="nav" aria-label="Sections">
-      <a href="#work">Work</a>
+    <button type="button" class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="siteNav"><span class="bars" aria-hidden="true"></span>Menu</button>
+    <nav class="nav" id="siteNav" aria-label="Sections">
       <a href="#approach">Approach</a>
+      <a href="#work">Work</a>
       <a href="#about">About</a>
       <a href="#answers">Quick answers</a>
       <a href="#contact" class="nav-primary">Contact</a>
@@ -955,6 +982,17 @@
   </div>
 </footer>
 
+<script>
+  // Phone menu: open/close, close after choosing a section or pressing Escape.
+  (function () {
+    var btn = document.getElementById('menuBtn'), nav = document.getElementById('siteNav');
+    if (!btn || !nav) return;
+    function set(open) { nav.classList.toggle('is-open', open); btn.setAttribute('aria-expanded', String(open)); }
+    btn.addEventListener('click', function () { set(!nav.classList.contains('is-open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  })();
+</script>
 <script>
   // Build the email link in the browser (keeps the address out of the raw page source).
   (function () {
