@@ -9,7 +9,7 @@
 - Has taken two paid-acquisition accounts in-house from agencies, rebuilt them and scaled them.
 - Builds conversion tracking and attribution from scratch in GA4 and Google Tag Manager.
 - Builds marketing automation and AI tools with n8n, Python, Claude Code and the Claude API.
-- Headline results: cut CPA by about 55% at 20% month-over-month new-user growth (US health app); owned a ~$400K monthly media budget across 12 European markets; scaled a ~£1M/month UK and Ireland search account to a top-three market position.
+- Headline results: cut CPA by about 55% at 20% month-over-month new-user growth (US health app); owned a ~$340K monthly media budget on Google and Bing across 12 European markets; scaled a ~£1M/month UK and Ireland search account to a top-three market position.
 - Open to roles across user acquisition, AI marketing engineering, AI building, marketing analytics and conversion-rate optimization (CRO), full-time or freelance.
 - Education: B.A. in Computer Science, Interdisciplinary Center (IDC) Herzliya.
 
