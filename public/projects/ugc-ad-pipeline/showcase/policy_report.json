@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "offer clarity",
+        "quote": "Free for 14 days, then cancel any time.",
+        "why": "The script leaves out the $4.99 monthly price that follows the free trial, so viewers may not know what they will be charged.",
+        "fix": "Free for 14 days, then $4.99 a month. Cancel any time."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "tone",
+        "quote": "Many people reuse passwords, and that's normal.",
+        "why": "Calling password reuse 'normal' could be read as excusing a risky habit, which sits awkwardly with a calm, friendly tip.",
+        "fix": "Lots of people reuse passwords, and it's an easy habit to fall into."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "offer clarity",
+        "quote": "Free for 14 days, then $4.99 a month.",
+        "why": "The brief's offer includes 'cancel any time', and stating it would help viewers who worry about being locked in.",
+        "fix": "Free for 14 days, then $4.99 a month. Cancel any time."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "tone",
+        "quote": "So my teen rolled her eyes when I said, 'change your password.'",
+        "why": "Opening on a lecture about passwords risks sounding slightly preachy, which the brief asks to avoid.",
+        "fix": "So my teen rolled her eyes when I brought up passwords again. Fair enough. Here's an easier way."
+      },
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "clarity",
+        "quote": "the shared vault keeps passwords in order",
+        "why": "\"In order\" is vague for non-technical viewers and does not say what the vault does.",
+        "fix": "and the shared family vault keeps everyone's passwords in one safe place"
+      }
+    ]
+  }
+]

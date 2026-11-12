@@ -1,0 +1,65 @@
+{
+  "spent_usd": 3.0732,
+  "lines": [
+    {
+      "item": "Claude: variations",
+      "detail": "claude-sonnet-5-5, 1976 in / 2918 out tokens",
+      "usd": 0.0331
+    },
+    {
+      "item": "Claude: policy check, ad 1",
+      "detail": "claude-haiku-5-5, 1327 in / 659 out tokens",
+      "usd": 0.0005
+    },
+    {
+      "item": "Claude: policy check, ad 2",
+      "detail": "claude-haiku-5-5, 1327 in / 291 out tokens",
+      "usd": 0.0003
+    },
+    {
+      "item": "Claude: policy check, ad 3",
+      "detail": "claude-haiku-5-5, 1329 in / 675 out tokens",
+      "usd": 0.0005
+    },
+    {
+      "item": "Voice, ad 1",
+      "detail": "ElevenLabs, 261 characters (rough)",
+      "usd": 0.0261
+    },
+    {
+      "item": "Video, ad 1",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 18 seconds",
+      "usd": 1.0159
+    },
+    {
+      "item": "Voice, ad 2",
+      "detail": "ElevenLabs, 250 characters (rough)",
+      "usd": 0.025
+    },
+    {
+      "item": "Video, ad 2",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 17 seconds",
+      "usd": 0.9295
+    },
+    {
+      "item": "Voice, ad 3",
+      "detail": "ElevenLabs, 264 characters (rough)",
+      "usd": 0.0264
+    },
+    {
+      "item": "Video, ad 3",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 18 seconds",
+      "usd": 1.0159
+    }
+  ],
+  "full_run_estimate": {
+    "parts_usd": {
+      "claude": 0.034,
+      "images": 0.24,
+      "voice": 0.078,
+      "video": 2.961
+    },
+    "total_usd": 3.31,
+    "video_per_ad_usd": 0.99
+  }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "angle": "Paste a weird text into 'Check this message' and get a plain-words answer",
+    "hook_type": "Relatable moment",
+    "persona": "Adult daughter in her late 30s who helps her parents with their phones",
+    "persona_look": "Late 30s woman, shoulder-length brown hair, casual denim jacket, relaxed smile. Fictional.",
+    "setting": "Parked car in a sunny driveway, phone held at arm's length",
+    "voice": "female",
+    "voice_age": "middle",
+    "format": "Selfie talk-to-camera",
+    "hook": "Okay so, my phone just buzzed with a text about a package I didn't order.",
+    "spoken_lines": "Okay so, my phone just buzzed with a text about a package I didn't order. Annoying, right? Here's a tip... paste it into SafeNest's 'Check this message' tool. It tells you in plain words if it looks like a scam. Free for 14 days, then cancel any time.",
+    "scenes": [
+      "Close selfie shot, she holds up her phone and raises an eyebrow at the screen",
+      "Cut to a screen recording of a pasted text going into the 'Check this message' tool and a plain-words answer appearing",
+      "Back to selfie, she gives a relaxed shrug and a small smile as she points to the download link"
+    ],
+    "on_screen_text": [
+      "Weird text? Check it first",
+      "Paste it in. Get a plain-words answer",
+      "Free for 14 days. Cancel any time"
+    ],
+    "cta": "Try SafeNest free for 14 days"
+  },
+  {
+    "id": 2,
+    "angle": "Reusing one easy password is common and a shared family vault keeps things tidy",
+    "hook_type": "Myth-busting",
+    "persona": "Easygoing dad in his early 50s who is a bit goofy about tech",
+    "persona_look": "Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional.",
+    "setting": "Walking along a leafy neighborhood sidewalk with a dog in the background",
+    "voice": "male",
+    "voice_age": "middle",
+    "format": "Walk-and-talk",
+    "hook": "Myth: a password with your dog's name is totally fine.",
+    "spoken_lines": "Myth: a password with your dog's name is totally fine. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "scenes": [
+      "Walking shot, he glances down at the dog and laughs as he says the myth",
+      "Cut to a phone screen showing a tidy shared family password vault with a few labeled entries",
+      "Back to walking shot, he gives a thumbs-up and holds the phone toward the camera"
+    ],
+    "on_screen_text": [
+      "Myth: 'Fido123' is fine",
+      "Keep family passwords in one place",
+      "Free for 14 days"
+    ],
+    "cta": "Start your free 14 days"
+  },
+  {
+    "id": 3,
+    "angle": "A step-by-step demo of checking a suspicious text before clicking anything",
+    "hook_type": "Demo",
+    "persona": "Cheerful retired grandmother in her 60s who is learning her phone",
+    "persona_look": "Early 60s woman, short silver hair, reading glasses on a chain, soft cardigan. Fictional.",
+    "setting": "Cozy living room armchair, screen-recording style with her voice over the phone screen",
+    "voice": "female",
+    "voice_age": "older",
+    "format": "Phone screen demo with voiceover",
+    "hook": "Wait, is this text real?",
+    "spoken_lines": "Wait, is this text real? It says my account needs attention. Hmm. Watch... I paste it in, and SafeNest gives me a plain-words answer on whether it looks like a scam. No hunting through a manual. Free for 14 days, then $4.99 a month.",
+    "scenes": [
+      "Over-the-shoulder shot of a phone showing a sample text that says an account needs attention, her finger hovering",
+      "Screen recording of copying the text, opening SafeNest and tapping 'Check this message'",
+      "Cut to her smiling in the armchair, nodding at the answer on screen"
+    ],
+    "on_screen_text": [
+      "Not sure about a text? Check it first",
+      "Paste. Tap. Plain-words answer",
+      "Free for 14 days, then $4.99 a month"
+    ],
+    "cta": "Download SafeNest and try it free"
+  },
+  {
+    "id": 4,
+    "angle": "A gentle way to nudge a teen about passwords, with a data leak alert for the whole family",
+    "hook_type": "Story",
+    "persona": "Warm, slightly dry-humored mom of a teenager",
+    "persona_look": "Mid 40s woman, curly dark hair in a loose clip, cozy oatmeal sweater, mug in hand. Fictional.",
+    "setting": "Bright home kitchen with a counter and fruit bowl",
+    "voice": "female",
+    "voice_age": "middle",
+    "format": "Selfie talk-to-camera with quick cutaways",
+    "hook": "So my teen rolled her eyes when I said, 'change your password.'",
+    "spoken_lines": "So my teen rolled her eyes when I said, 'change your password.' Okay, fair. Here's a gentler way. SafeNest sends an alert if a family member's email shows up in a known data leak, and the shared vault keeps passwords in order. Free for 14 days.",
+    "scenes": [
+      "Mom in the kitchen does a dramatic eye-roll impression, then laughs",
+      "Cutaway to a phone screen showing a calm leak alert for a family member's email and the shared vault list",
+      "Back to mom lifting her mug and smiling toward the camera"
+    ],
+    "on_screen_text": [
+      "'Change your password.' *eye roll*",
+      "Get an alert if a family email shows up in a known leak",
+      "Free for 14 days. Cancel any time"
+    ],
+    "cta": "Try SafeNest free for 14 days"
+  }
+]

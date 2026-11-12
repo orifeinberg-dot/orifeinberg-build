@@ -1,0 +1,130 @@
+{
+  "spent_usd": 7.6843,
+  "lines": [
+    {
+      "item": "Claude: scripts",
+      "detail": "claude-sonnet-5-5, 1322 in / 4715 out tokens",
+      "usd": 0.0498
+    },
+    {
+      "item": "Claude: policy check, ad 1",
+      "detail": "claude-haiku-5-5, 1352 in / 677 out tokens",
+      "usd": 0.0005
+    },
+    {
+      "item": "Claude: policy check, ad 2",
+      "detail": "claude-haiku-5-5, 1325 in / 553 out tokens",
+      "usd": 0.0004
+    },
+    {
+      "item": "Claude: policy check, ad 3",
+      "detail": "claude-haiku-5-5, 1343 in / 706 out tokens",
+      "usd": 0.0005
+    },
+    {
+      "item": "Claude: policy check, ad 4",
+      "detail": "claude-haiku-5-5, 1339 in / 707 out tokens",
+      "usd": 0.0005
+    },
+    {
+      "item": "Image, ad 1",
+      "detail": "fal-ai/nano-banana-2",
+      "usd": 0.08
+    },
+    {
+      "item": "Voice, ad 1",
+      "detail": "ElevenLabs, 251 characters (rough)",
+      "usd": 0.0251
+    },
+    {
+      "item": "Image, ad 2",
+      "detail": "fal-ai/nano-banana-2",
+      "usd": 0.08
+    },
+    {
+      "item": "Voice, ad 2",
+      "detail": "ElevenLabs, 255 characters (rough)",
+      "usd": 0.0255
+    },
+    {
+      "item": "Image, ad 3",
+      "detail": "fal-ai/nano-banana-2",
+      "usd": 0.08
+    },
+    {
+      "item": "Voice, ad 3",
+      "detail": "ElevenLabs, 232 characters (rough)",
+      "usd": 0.0232
+    },
+    {
+      "item": "Image, ad 4",
+      "detail": "fal-ai/nano-banana-2",
+      "usd": 0.08
+    },
+    {
+      "item": "Voice, ad 4",
+      "detail": "ElevenLabs, 244 characters (rough)",
+      "usd": 0.0244
+    },
+    {
+      "item": "Video, ad 1",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 18 seconds",
+      "usd": 1.0375
+    },
+    {
+      "item": "Video, ad 1",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/pro, about 18 seconds",
+      "usd": 2.1231
+    },
+    {
+      "item": "Voice, ad 1",
+      "detail": "ElevenLabs, 251 characters (rough)",
+      "usd": 0.0251
+    },
+    {
+      "item": "Video, ad 1",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 18 seconds",
+      "usd": 1.0375
+    },
+    {
+      "item": "Voice, ad 2",
+      "detail": "ElevenLabs, 255 characters (rough)",
+      "usd": 0.0255
+    },
+    {
+      "item": "Video, ad 2",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 17 seconds",
+      "usd": 0.9727
+    },
+    {
+      "item": "Voice, ad 3",
+      "detail": "ElevenLabs, 232 characters (rough)",
+      "usd": 0.0232
+    },
+    {
+      "item": "Video, ad 3",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 17 seconds",
+      "usd": 0.9511
+    },
+    {
+      "item": "Voice, ad 4",
+      "detail": "ElevenLabs, 244 characters (rough)",
+      "usd": 0.0244
+    },
+    {
+      "item": "Video, ad 4",
+      "detail": "fal-ai/kling-video/ai-avatar/v2/standard, about 18 seconds",
+      "usd": 0.9943
+    }
+  ],
+  "full_run_estimate": {
+    "parts_usd": {
+      "claude": 0.052,
+      "images": 0.32,
+      "voice": 0.098,
+      "video": 3.956
+    },
+    "total_usd": 4.43,
+    "video_per_ad_usd": 0.99
+  }
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "angle": "Reusing one easy password is common and a shared family vault keeps things tidy",
+    "hook_type": "Myth-busting",
+    "persona": "Easygoing dad in his early 50s who is a bit goofy about tech",
+    "persona_look": "Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional.",
+    "setting": "Walking along a leafy neighborhood sidewalk with a dog in the background",
+    "voice": "male",
+    "voice_age": "middle",
+    "format": "Walk-and-talk",
+    "hook": "Myth: using your dog's name as a password is a clever trick.",
+    "spoken_lines": "Myth: using your dog's name as a password is a clever trick. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "scenes": [
+      "Walking shot, he glances down at the dog and laughs as he says the myth",
+      "Cut to a phone screen showing a tidy shared family password vault with a few labeled entries",
+      "Back to walking shot, he gives a thumbs-up and holds the phone toward the camera"
+    ],
+    "on_screen_text": [
+      "Myth: 'Fido123' is fine",
+      "Keep family passwords in one place",
+      "Free for 14 days"
+    ],
+    "cta": "Start your free 14 days",
+    "changed": "Opening line now calls the dog-name password a 'clever trick'."
+  },
+  {
+    "id": 2,
+    "angle": "Reusing one easy password is common and a shared family vault keeps things tidy",
+    "hook_type": "Myth-busting",
+    "persona": "Easygoing dad in his early 50s who is a bit goofy about tech",
+    "persona_look": "Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional.",
+    "setting": "Walking along a leafy neighborhood sidewalk with a dog in the background",
+    "voice": "male",
+    "voice_age": "middle",
+    "format": "Walk-and-talk",
+    "hook": "Quick myth: Fido123 is a perfectly good password.",
+    "spoken_lines": "Quick myth: Fido123 is a perfectly good password. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "scenes": [
+      "Walking shot, he glances down at the dog and laughs as he says the myth",
+      "Cut to a phone screen showing a tidy shared family password vault with a few labeled entries",
+      "Back to walking shot, he gives a thumbs-up and holds the phone toward the camera"
+    ],
+    "on_screen_text": [
+      "Myth: 'Fido123' is fine",
+      "Keep family passwords in one place",
+      "Free for 14 days"
+    ],
+    "cta": "Start your free 14 days",
+    "changed": "Opening line now uses a quick, specific example password instead of the dog's name in general."
+  },
+  {
+    "id": 3,
+    "angle": "Reusing one easy password is common and a shared family vault keeps things tidy",
+    "hook_type": "Myth-busting",
+    "persona": "Easygoing dad in his early 50s who is a bit goofy about tech",
+    "persona_look": "Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional.",
+    "setting": "Walking along a leafy neighborhood sidewalk with a dog in the background",
+    "voice": "male",
+    "voice_age": "middle",
+    "format": "Walk-and-talk",
+    "hook": "Wait, myth: your dog's name plus a number is a strong password.",
+    "spoken_lines": "Wait, myth: your dog's name plus a number is a strong password. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "scenes": [
+      "Walking shot, he glances down at the dog and laughs as he says the myth",
+      "Cut to a phone screen showing a tidy shared family password vault with a few labeled entries",
+      "Back to walking shot, he gives a thumbs-up and holds the phone toward the camera"
+    ],
+    "on_screen_text": [
+      "Myth: 'Fido123' is fine",
+      "Keep family passwords in one place",
+      "Free for 14 days"
+    ],
+    "cta": "Start your free 14 days",
+    "changed": "Opening line now starts with 'Wait,' and says the myth is that a dog's name plus a number is strong."
+  }
+]

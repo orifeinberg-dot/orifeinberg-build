@@ -1,0 +1,30 @@
+{
+  "1": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Late 30s woman, shoulder-length brown hair, casual denim jacket, relaxed smile. Fictional., in Parked car in a sunny driveway, phone held at arm's length. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Okay so, my phone just buzzed with a text about a package I didn't order. Annoying, right? Here's a tip... paste it into SafeNest's 'Check this message' tool. It tells you in plain words if it looks like a scam. Free for 14 days, then cancel any time.",
+    "voice": "female",
+    "voice_age": "middle"
+  },
+  "2": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional., in Walking along a leafy neighborhood sidewalk with a dog in the background. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Myth: a password with your dog's name is totally fine. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "voice": "male",
+    "voice_age": "middle"
+  },
+  "3": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Early 60s woman, short silver hair, reading glasses on a chain, soft cardigan. Fictional., in Cozy living room armchair, screen-recording style with her voice over the phone screen. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Wait, is this text real? It says my account needs attention. Hmm. Watch... I paste it in, and SafeNest gives me a plain-words answer on whether it looks like a scam. No hunting through a manual. Free for 14 days, then $4.99 a month.",
+    "voice": "female",
+    "voice_age": "older"
+  },
+  "4": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Mid 40s woman, curly dark hair in a loose clip, cozy oatmeal sweater, mug in hand. Fictional., in Bright home kitchen with a counter and fruit bowl. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "So my teen rolled her eyes when I said, 'change your password.' Okay, fair. Here's a gentler way. SafeNest sends an alert if a family member's email shows up in a known data leak, and the shared vault keeps passwords in order. Free for 14 days.",
+    "voice": "female",
+    "voice_age": "middle"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "1": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional., in Walking along a leafy neighborhood sidewalk with a dog in the background. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Myth: using your dog's name as a password is a clever trick. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "voice": "male",
+    "voice_age": "middle"
+  },
+  "2": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional., in Walking along a leafy neighborhood sidewalk with a dog in the background. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Quick myth: Fido123 is a perfectly good password. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "voice": "male",
+    "voice_age": "middle"
+  },
+  "3": {
+    "image_prompt": "Vertical 9:16 smartphone selfie-style photo of Early 50s man, short salt-and-pepper hair, light quarter-zip sweater, glasses. Fictional., in Walking along a leafy neighborhood sidewalk with a dog in the background. Looking straight at the camera with a natural, friendly expression, holding the phone at arm's length. Casual user-generated-content look, soft natural light, slightly imperfect framing, realistic skin. No text, no logos, no watermark. A fictional person.",
+    "video_prompt": "The person talks naturally to the camera, with small head and hand movements and a friendly face. Steady handheld phone feel. Keep the same person and background.",
+    "voice_text": "Wait, myth: your dog's name plus a number is a strong password. Okay, it's... not great. Many people reuse passwords, and that's normal. Honestly, who remembers twenty? SafeNest has a shared family vault, so you keep them all in one place. Try it free for 14 days.",
+    "voice": "male",
+    "voice_age": "middle"
+  }
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "wording clarity",
+        "quote": "Many people reuse passwords, and that's normal.",
+        "why": "'Many' is vague, and the line could be read as a judgement about the viewer's own habits, which the brief's warm, non-preachy tone is meant to avoid.",
+        "fix": "Lots of people reuse passwords, and it's an easy habit to fall into."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": []
+  },
+  {
+    "id": 3,
+    "verdict": "pass",
+    "checked_by": [
+      "local rules",
+      "claude-haiku-5-5"
+    ],
+    "issues": [
+      {
+        "source": "claude",
+        "severity": "tip",
+        "category": "brief alignment",
+        "quote": "SafeNest has a shared family vault, so you keep them all in one place.",
+        "why": "The brief's main benefit includes the 'Check this message' tool for suspicious texts, but the script only mentions the password vault.",
+        "fix": "SafeNest has a shared family vault, plus a Check this message tool for suspicious texts, all in one place."
+      }
+    ]
+  }
+]
