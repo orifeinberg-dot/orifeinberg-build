@@ -19,11 +19,11 @@ share_image: ugc-share.png
 
 ## Hook
 
-Can AI turn one product brief into a batch of UGC-style video ads, and keep every ad inside Facebook's rules?
+Can AI turn one product brief into a batch of UGC-style video ads, and keep every ad inside Meta's ad rules?
 
 ## Insight
 
-Ads that look like a real person talking to their phone are some of the best performers on Facebook, and slow to make. The hard part of automating them is not the video. It is making sure what the person says is honest, and that you can run it again for a few dollars.
+Ads that look like a real person talking to their phone are some of the best performers on Meta, and slow to make. Automating the video is the easy part. The real challenge is keeping every claim honest, and keeping each run cheap enough to repeat.
 
 So I started with the rules. A short brief names the product, the audience, the tone, and a list of things the ads must never claim. Claude reads it to write the ads, and a second, cheaper Claude model reads the same list to check them. One source of truth, two readers.
 
